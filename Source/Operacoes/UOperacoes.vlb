@@ -1,0 +1,15 @@
+﻿[dmDB.TReceituario]
+Visible=False
+
+[dmDB.TDetReceituario]
+Visible=False
+
+[dmDB.TOperacoes]
+Visible=False
+
+[dmDB.TMaquina]
+Visible=False
+
+[dmDB.TTipoAplicacaoSolido]
+Visible=False
+
