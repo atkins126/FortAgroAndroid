@@ -17,74 +17,30 @@ uses
 type
   TdmRevisao = class(TDataModule)
     TAuxRevisaoItem: TFDQuery;
-    TAuxRevisaoItemid: TIntegerField;
-    TAuxRevisaoItemstatus: TIntegerField;
-    TAuxRevisaoItemdatareg: TSQLTimeStampField;
-    TAuxRevisaoItemidusuario: TIntegerField;
-    TAuxRevisaoItemdataalteracao: TSQLTimeStampField;
-    TAuxRevisaoItemidusuarioalteracao: TIntegerField;
-    TAuxRevisaoItemnome: TWideStringField;
-    TAuxRevisaoItemsyncaws: TIntegerField;
-    TAuxRevisaoItemsyncfaz: TIntegerField;
-    TAuxRevisaoItemgrupo: TWideStringField;
-    TRevisao: TFDQuery;
-    TRevisaoItens: TFDQuery;
-    TRevisaoMaquinas: TFDQuery;
+    TPlanorevisao: TFDQuery;
+    TPlanoRevisaoMaquinas: TFDQuery;
     dsRevisao: TDataSource;
-    TRevisaoMaquinasid: TIntegerField;
-    TRevisaoMaquinasstatus: TIntegerField;
-    TRevisaoMaquinasdatareg: TSQLTimeStampField;
-    TRevisaoMaquinasidusuario: TIntegerField;
-    TRevisaoMaquinasdataalteracao: TSQLTimeStampField;
-    TRevisaoMaquinasidusuarioalteracao: TIntegerField;
-    TRevisaoMaquinasidrevisao: TIntegerField;
-    TRevisaoMaquinasidmaquina: TIntegerField;
-    TRevisaoMaquinassyncaws: TIntegerField;
-    TRevisaoMaquinassyncfaz: TIntegerField;
-    TRevisaoMaquinasmodelo: TWideStringField;
-    TRevisaoMaquinasprefixo: TWideStringField;
-    TRevisaoMaquinasplaca: TWideStringField;
-    TRevisaoMaquinascombustivel: TIntegerField;
-    TRevisaoMaquinasultimarevisao: TDateField;
-    TRevisaoMaquinashorimetroultimarev: TBCDField;
-    TAuxRevisaoItemcheck: TBooleanField;
+    TPlanoRevisaoMaquinasid: TIntegerField;
+    TPlanoRevisaoMaquinasstatus: TIntegerField;
+    TPlanoRevisaoMaquinasdatareg: TSQLTimeStampField;
+    TPlanoRevisaoMaquinasidusuario: TIntegerField;
+    TPlanoRevisaoMaquinasdataalteracao: TSQLTimeStampField;
+    TPlanoRevisaoMaquinasidusuarioalteracao: TIntegerField;
+    TPlanoRevisaoMaquinasidrevisao: TIntegerField;
+    TPlanoRevisaoMaquinasidmaquina: TIntegerField;
+    TPlanoRevisaoMaquinassyncaws: TIntegerField;
+    TPlanoRevisaoMaquinassyncfaz: TIntegerField;
+    TPlanoRevisaoMaquinasmodelo: TWideStringField;
+    TPlanoRevisaoMaquinasprefixo: TWideStringField;
+    TPlanoRevisaoMaquinasplaca: TWideStringField;
+    TPlanoRevisaoMaquinascombustivel: TIntegerField;
+    TPlanoRevisaoMaquinasultimarevisao: TDateField;
+    TPlanoRevisaoMaquinashorimetroultimarev: TBCDField;
     TRevisaoMaquinaAplLista: TFDQuery;
     TRevisaoMaquinaItens: TFDQuery;
     qryAux: TFDQuery;
     TRevisaoMaquinaApl: TFDQuery;
     TRevisaoServicos: TFDQuery;
-    TRevisaoServicosid: TIntegerField;
-    TRevisaoServicosstatus: TWideStringField;
-    TRevisaoServicosdatareg: TWideStringField;
-    TRevisaoServicosidusuario: TWideStringField;
-    TRevisaoServicosdataalteracao: TWideStringField;
-    TRevisaoServicosidusuarioalteracao: TWideStringField;
-    TRevisaoServicostiposervico: TWideStringField;
-    TRevisaoServicosidrevisao: TWideStringField;
-    TRevisaoServicosdescricao: TStringField;
-    TRevisaoServicosresponsavel: TStringField;
-    TRevisaoServicosvalortotal: TBCDField;
-    TRevisaoServicossyncaws: TWideStringField;
-    TRevisaoServicossyncfaz: TWideStringField;
-    TRevisaoServicosdatarealizado: TDateField;
-    TRevisaoMaquinaItensid: TWideStringField;
-    TRevisaoMaquinaItensstatus: TWideStringField;
-    TRevisaoMaquinaItensdatareg: TWideStringField;
-    TRevisaoMaquinaItensidusuario: TWideStringField;
-    TRevisaoMaquinaItensdataalteracao: TWideStringField;
-    TRevisaoMaquinaItensidusuarioalteracao: TWideStringField;
-    TRevisaoMaquinaItensidrevisao: TWideStringField;
-    TRevisaoMaquinaItenssyncaws: TWideStringField;
-    TRevisaoMaquinaItenssyncfaz: TWideStringField;
-    TRevisaoMaquinaItensidproduto: TWideStringField;
-    TRevisaoMaquinaItensqtde: TBCDField;
-    TRevisaoMaquinaItensitem: TStringField;
-    TRevisaoMaquinaItenstipo: TWideStringField;
-    TRevisaoMaquinaItensobservacao: TStringField;
-    TRevisaoMaquinaItensiditem: TWideStringField;
-    TRevisaoMaquinaItensnome: TStringField;
-    TRevisaoMaquinaItenscodigofabricante: TStringField;
-    TRevisaoMaquinaItenstipoStr: TWideStringField;
     TRevisaoMaquinaAplid: TIntegerField;
     TRevisaoMaquinaAplstatus: TWideStringField;
     TRevisaoMaquinaApldatareg: TWideStringField;
@@ -143,35 +99,59 @@ type
     TRevisaoMaquinaAplListaprefixo: TStringField;
     TRevisaoMaquinaAplListaresponsavel: TStringField;
     TRevisaoMaquinaAplListaTipoRevisao: TWideStringField;
-    TRevisaoItensid: TIntegerField;
-    TRevisaoItensstatus: TWideStringField;
-    TRevisaoItensdatareg: TWideStringField;
-    TRevisaoItensidusuario: TWideStringField;
-    TRevisaoItensdataalteracao: TWideStringField;
-    TRevisaoItensidusuarioalteracao: TWideStringField;
-    TRevisaoItensidrevisao: TWideStringField;
-    TRevisaoItenssyncaws: TWideStringField;
-    TRevisaoItenssyncfaz: TWideStringField;
-    TRevisaoItensidproduto: TWideStringField;
-    TRevisaoItensqtde: TBCDField;
-    TRevisaoItenstipo: TWideStringField;
-    TRevisaoItensobservacao: TStringField;
-    TRevisaoItensitem: TStringField;
-    TRevisaoItensiditem: TWideStringField;
-    TRevisaoItensItemNome: TStringField;
-    TRevisaoItenscodigofabricante: TStringField;
-    TRevisaoItensproduto: TStringField;
-    TRevisaoid: TIntegerField;
-    TRevisaonome: TStringField;
-    TRevisaointervalohoras: TBCDField;
+    TPlanorevisaoid: TIntegerField;
+    TPlanorevisaonome: TStringField;
+    TPlanorevisaointervalohoras: TBCDField;
+    TRevisaoMaquinaItensid: TFDAutoIncField;
+    TRevisaoMaquinaItensstatus: TWideStringField;
+    TRevisaoMaquinaItensdatareg: TWideStringField;
+    TRevisaoMaquinaItensidusuario: TWideStringField;
+    TRevisaoMaquinaItensdataalteracao: TWideStringField;
+    TRevisaoMaquinaItensidusuarioalteracao: TWideStringField;
+    TRevisaoMaquinaItensidrevisao: TWideStringField;
+    TRevisaoMaquinaItenssyncaws: TWideStringField;
+    TRevisaoMaquinaItenssyncfaz: TWideStringField;
+    TRevisaoMaquinaItensidproduto: TWideStringField;
+    TRevisaoMaquinaItensqtde: TBCDField;
+    TRevisaoMaquinaItensitem: TStringField;
+    TRevisaoMaquinaItenstipo: TWideStringField;
+    TRevisaoMaquinaItensobservacao: TStringField;
+    TRevisaoMaquinaItensiditem: TWideStringField;
+    TRevisaoMaquinaItensnome: TStringField;
+    TRevisaoMaquinaItenscodigofabricante: TStringField;
+    TRevisaoMaquinaItenstipoStr: TWideStringField;
+    TAuxRevisaoItemid: TIntegerField;
+    TAuxRevisaoItemstatus: TWideStringField;
+    TAuxRevisaoItemdatareg: TWideStringField;
+    TAuxRevisaoItemidusuario: TWideStringField;
+    TAuxRevisaoItemdataalteracao: TWideStringField;
+    TAuxRevisaoItemidusuarioalteracao: TWideStringField;
+    TAuxRevisaoItemnome: TStringField;
+    TAuxRevisaoItemgrupo: TStringField;
+    TAuxRevisaoItemsyncaws: TWideStringField;
+    TAuxRevisaoItemsyncfaz: TWideStringField;
+    TRevisaoServicosid: TIntegerField;
+    TRevisaoServicosstatus: TWideStringField;
+    TRevisaoServicosdatareg: TWideStringField;
+    TRevisaoServicosidusuario: TWideStringField;
+    TRevisaoServicosdataalteracao: TWideStringField;
+    TRevisaoServicosidusuarioalteracao: TWideStringField;
+    TRevisaoServicostiposervico: TWideStringField;
+    TRevisaoServicosidrevisao: TWideStringField;
+    TRevisaoServicosdescricao: TStringField;
+    TRevisaoServicosresponsavel: TStringField;
+    TRevisaoServicosvalortotal: TBCDField;
+    TRevisaoServicossyncaws: TWideStringField;
+    TRevisaoServicossyncfaz: TWideStringField;
+    TRevisaoServicosdatarealizado: TDateField;
     procedure TRevisaoItensReconcileError(DataSet: TFDDataSet; E: EFDException;
       UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
     procedure TAuxRevisaoItemReconcileError(DataSet: TFDDataSet;
       E: EFDException; UpdateKind: TFDDatSRowState;
       var Action: TFDDAptReconcileAction);
-    procedure TRevisaoReconcileError(DataSet: TFDDataSet; E: EFDException;
+    procedure TPlanorevisaoReconcileError(DataSet: TFDDataSet; E: EFDException;
       UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
-    procedure TRevisaoMaquinasReconcileError(DataSet: TFDDataSet;
+    procedure TPlanoRevisaoMaquinasReconcileError(DataSet: TFDDataSet;
       E: EFDException; UpdateKind: TFDDatSRowState;
       var Action: TFDDAptReconcileAction);
     procedure TRevisaoMaquinaItensReconcileError(DataSet: TFDDataSet;
@@ -192,6 +172,7 @@ type
     function  VerificaItensConfirmados(IdPlano:string):string;
     function  RetornaIdMaxRevisao:string;
     procedure AbreRevisaoApl(Filtro:string);
+    procedure AbreRevisaoAplInsertEdit(Filtro: string);
     procedure AbreItensRevisaoApl(vIdRevisao:string);
     procedure AbrirServicosRevisao(vIdRevisao:string);
     procedure AbrePlanoRevisaoMaquina(vFiltro:string);
@@ -208,6 +189,10 @@ type
     procedure MudaStatusRevisaoEditSync(AiD:String);
     function RetornaMaxIdRevisao:string;
     procedure IsereItensRevisao(idPlano,idRevisao:string);
+    function  VerificaCadastroExiste(campo,tabela,valor:string):Boolean;
+    procedure DeletaRevisao(idRev:string);
+    procedure DeletaRevisaoitem(id: string);
+    function  RetornaItensRevisaoConfirmados(vIdRev:string):integer;
 
   end;
 
@@ -229,7 +214,12 @@ begin
  with TRevisaoMaquinaItens,TRevisaoMaquinaItens.SQL do
  begin
    Clear;
-   Add('select a.*,b.nome,b.codigofabricante');
+   Add('select a.*,b.nome,b.codigofabricante,');
+   Add('case');
+   Add(' when a.tipo=0 then ''Manutenção''');
+   Add(' when a.tipo=1 then ''Lubrificação''');
+   Add(' when a.tipo=2 then ''Verificação''');
+   Add('end tipoStr');
    Add('from revisaomaquinaitens a');
    Add('join produtos b on a.idproduto=b.id');
    Add('where a.status>-1');
@@ -238,9 +228,10 @@ begin
  end;
 end;
 
+
 procedure TdmRevisao.AbrePlanoRevisaoMaquina(vFiltro: string);
 begin
-  with TRevisao,TRevisao.SQL do
+  with TPlanorevisao,TPlanorevisao.SQL do
   begin
     Clear;
     Add('select * from planorevisao');
@@ -269,6 +260,19 @@ begin
    Add('join usuario u on u.id=c.idresponsavel');
    Add('where c.status>-1');
    Add(Filtro);
+   Open;
+ end;
+end;
+
+procedure TdmRevisao.AbreRevisaoAplInsertEdit(Filtro: string);
+begin
+ with TRevisaoMaquinaApl,TRevisaoMaquinaApl.SQL do
+ begin
+   Clear;
+   Add('select * from revisaomaquina a');
+   Add('where a.status>-1');
+   if Filtro.Length>0 then
+    Add('and id='+Filtro);
    Open;
  end;
 end;
@@ -312,6 +316,38 @@ begin
    Add(',horimetroproximarevisao='+HoraProxima);
    Add(',ultimarevisao='+DataUltima);
    Add('where ID='+vIdMaquina);
+   try
+    ExecSQL;
+   except
+     on E : Exception do
+      ShowMessage(E.ClassName+' error raised, with message : '+E.Message);
+    end;
+ end;
+end;
+
+procedure TdmRevisao.DeletaRevisao(idRev: string);
+begin
+with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('DELETE FROM revisaomaquina');
+   Add('where id='+idRev);
+   try
+    ExecSQL;
+   except
+     on E : Exception do
+      ShowMessage(E.ClassName+' error raised, with message : '+E.Message);
+    end;
+ end;
+end;
+
+procedure TdmRevisao.DeletaRevisaoitem(id: string);
+begin
+with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('DELETE FROM revisaomaquinaitens');
+   Add('where id='+id);
    try
     ExecSQL;
    except
@@ -390,16 +426,16 @@ begin
  with qryAux,qryAux.SQL do
  begin
    Clear;
-   Add('INSERT INTO public.revisaomaquinaitens');
+   Add('INSERT INTO revisaomaquinaitens');
    Add('(idusuario,idrevisao,idproduto,qtde,item,tipo,observacao,iditem)');
    Add('values(');
    Add(dmDB.vIdUser+',');
    Add(idrevisao+',');
    Add(idproduto+',');
    Add(qtde+',');
-   Add(item+',');
+   Add(item.QuotedString+',');
    Add(tipo+',');
-   Add(observacao+',');
+   Add(observacao.QuotedString+',');
    Add(iditem+')');
    ExecSQL;
  end;
@@ -411,10 +447,10 @@ begin
  begin
    Clear;
    Add('INSERT INTO revisaomaquinaitens');
-   Add('(idusuario,'+idRevisao+',idproduto,qtde,item,tipo,iditem)');
-   Add('select idusuario,idrevisao,idproduto,qtde,item,tipo,iditem');
+   Add('(idusuario,idrevisao,idproduto,qtde,item,tipo,iditem)');
+   Add('select idusuario,'+idRevisao+',idproduto,qtde,item,tipo,iditem');
    Add('from planorevisaoitens');
-   Add('where id='+idPlano);
+   Add('where idrevisao='+idPlano);
    try
     ExecSQL;
    except
@@ -490,6 +526,18 @@ begin
  end;
 end;
 
+function TdmRevisao.RetornaItensRevisaoConfirmados(vIdRev: string): integer;
+begin
+ with qryAux,qryAux.SQL do
+ begin
+  Clear;
+  Add('select count(*) qtd from revisaomaquinaitens');
+  Add('where status=2 and idrevisao='+vIdRev);
+  Open;
+  Result := FieldByName('qtd').AsInteger;
+ end;
+end;
+
 function TdmRevisao.RetornaMaxIdRevisao: string;
 begin
  with qryAux,qryAux.SQL do
@@ -548,14 +596,14 @@ begin
  ShowMessage(e.Message);
 end;
 
-procedure TdmRevisao.TRevisaoMaquinasReconcileError(DataSet: TFDDataSet;
+procedure TdmRevisao.TPlanoRevisaoMaquinasReconcileError(DataSet: TFDDataSet;
   E: EFDException; UpdateKind: TFDDatSRowState;
   var Action: TFDDAptReconcileAction);
 begin
     ShowMessage(e.Message);
 end;
 
-procedure TdmRevisao.TRevisaoReconcileError(DataSet: TFDDataSet;
+procedure TdmRevisao.TPlanorevisaoReconcileError(DataSet: TFDDataSet;
   E: EFDException; UpdateKind: TFDDatSRowState;
   var Action: TFDDAptReconcileAction);
 begin
@@ -572,11 +620,24 @@ begin
    Add('iditem='+iditem);
    if idProduto.length>0 then
     Add(',idproduto='+idProduto);
-   Add(',item='+item);
+   Add(',item='+item.QuotedString);
    Add(',qtde='+qtd);
-   Add(',observacao='+observacao);
+   Add(',observacao='+observacao.QuotedString);
    Add('where id='+id);
    ExecSQL;
+  end;
+end;
+
+function TdmRevisao.VerificaCadastroExiste(campo, tabela,
+  valor: string): Boolean;
+begin
+ with qryAux,qryAux.SQL do
+  begin
+     Clear;
+     Add('select *  from '+tabela);
+     Add('where '+campo+'='+valor);
+     Open;
+     Result := qryAux.IsEmpty;
   end;
 end;
 

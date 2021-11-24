@@ -20,7 +20,7 @@ uses
   IdHashMessageDigest,System.ImageList,
   FMX.ImgList, FMX.Media, System.Sensors, System.Sensors.Components,
   FMX.NumberBox, FMX.ListView.Types, FMX.ListView.Appearances,
-  FMX.ListView.Adapters.Base, FMX.ListView, FMX.Gestures
+  FMX.ListView.Adapters.Base, FMX.ListView, FMX.Gestures,u99Permissions
   {$IF DEFINED(iOS) or DEFINED(ANDROID)}
    ,Androidapi.JNI.Os, Androidapi.Helpers,
    Androidapi.JNI.GraphicsContentViewText,System.Permissions,FMX.DialogService
@@ -258,6 +258,11 @@ type
      vIdTalhao,vIdPraga,vIdMonitoramento,vStatus,vIdPonto,vNomePonto,
      vFlagSync,vIdPragaLista,vTagIni,vTagFim:string;
      Elapsed,vTipoAbertura,vNovoPonto,vFlagEnd: integer;
+
+    permissao : T99Permissions;
+    FImageStream: TStringStream;
+    PermissaoCamera, PermissaoReadStorage, PermissaoWriteStorage : string;
+
     {$IFDEF ANDROID}
      ClipService: IFMXClipboardService;
      Location: TLocationCoord2D;
@@ -268,6 +273,7 @@ type
      procedure LocationPermissionRequestResult
                 (Sender: TObject; const APermissions: TArray<string>;
                 const AGrantResults: TArray<TPermissionStatus>);
+
     {$ENDIF}
     procedure MudarAba(ATabItem: TTabItem; sender: TObject);
     procedure geraLista(Filtro:string);
@@ -287,7 +293,7 @@ implementation
 {$R *.fmx}
 
 uses UPrincipal, UDataContext, UTalhoes, UDataFunctions, Umsg, UPragas,
-  UDataSync;
+  UDataSync, UnitCamera;
 
 procedure TfrmMonitoramento.bntVoltaNovoMonitoramentoClick(Sender: TObject);
 begin
@@ -507,61 +513,24 @@ end;
 {$IFDEF ANDROID}
 procedure TfrmMonitoramento.btnLerQrClick(Sender: TObject);
 var
- Intent : JIntent;
+ vCodigo :string;
 begin
- vTipoAbertura :=1;
- if assigned(ClipService) then
- begin
-   clipservice.SetClipboard('');
-   ClipService.GetClipboard.IsEmpty;
-   intent := tjintent.Create;
-   intent.setAction(stringtojstring('com.google.zxing.client.android.SCAN'));
-   SharedActivity.startActivityForResult(intent,0);
-   Elapsed := 0;
-   TThread.CreateAnonymousThread(
-    procedure
-    var
-     vBoll:Boolean;
+  FrmCamera:= TFrmCamera.Create(nil);
+  FrmCamera.ShowModal(procedure(ModalResult: TModalResult)
+  begin
+    if ModalResult = 0 then
     begin
-      vBoll := true;
-      TThread.Synchronize(nil,procedure
-      begin
-        while vBoll  do
-        begin
-         if ClipService.GetClipboard.ToString <> 'nil' then
-         begin
-          if ClipService.GetClipboard.ToString.Length>2 then
-          begin
-           Elapsed    := 0;
-           vIdTalhao  :='';
-           if dmFunctions=nil then
-            dmFunctions := TdmFunctions.Create(Self);
-           vIdTalhao  := dmFunctions.RetornaIdTalhao(ClipService.GetClipboard.ToString);
-           edtTalhao.Text :=ClipService.GetClipboard.ToString;
-           if (vIdTalhao.Length=0) then
-           begin
-             vBoll := false;
-             TThread.sleep(3000);
-             ShowMessage('Talhão Não Encontrado');
-             edtTalhao.Text :='';
-             Exit;
-           end
-           else
-           begin
-            if vFlagEnd=0 then
-             vTagIni :=ClipService.GetClipboard.ToString
-            else
-             vTagFim :=ClipService.GetClipboard.ToString;
-            vBoll := false;
-           end;
-          end;
-         end
-         else
-           sleep(1000);
-        end;
-      end);
-    end).Start;
- end;
+     vCodigo        := FrmCamera.codigo;
+     vIdTalhao      := dmFunctions.RetornaIdTalhao(vCodigo);
+     edtTalhao.Text := vCodigo;
+     if (vIdTalhao.Length=0) then
+     begin
+       ShowMessage('Talhão Não Encontrado');
+       edtTalhao.Text :='';
+       Exit;
+     end;
+    end
+  end);
 end;
 {$ENDIF}
 procedure TfrmMonitoramento.btnNovaPragaClick(Sender: TObject);
@@ -674,9 +643,10 @@ end;
 
 procedure TfrmMonitoramento.FormCreate(Sender: TObject);
 begin
- {$IFDEF ANDROID}
-   Access_Coarse_Location := JStringToString(TJManifest_permission.JavaClass.ACCESS_COARSE_LOCATION);
-   Access_Fine_Location   := JStringToString(TJManifest_permission.JavaClass.ACCESS_FINE_LOCATION);
+  {$IFDEF ANDROID}
+   PermissaoCamera := JStringToString(TJManifest_permission.JavaClass.CAMERA);
+   PermissaoReadStorage := JStringToString(TJManifest_permission.JavaClass.READ_EXTERNAL_STORAGE);
+   PermissaoWriteStorage := JStringToString(TJManifest_permission.JavaClass.WRITE_EXTERNAL_STORAGE);
    if not TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, IInterface(ClipService)) then
     ClipService := nil;
   Elapsed := 0;
@@ -689,13 +659,24 @@ end;
 
 procedure TfrmMonitoramento.FormShow(Sender: TObject);
 begin
- laynovapraga.Visible         := false;
- btnExcluirPraga.Visible      := false;
- laynovapraga.Width           := frmPrincipal.Width-20;
- layNovoMonitoramento.Width   := frmPrincipal.Width-20;
- btnExcluiPontos.Visible      := false;
- GeraLista('');
- layNovoMonitoramento.Visible := false;
+ btnExcluiPontos.Visible := false;
+ permissao               := T99Permissions.Create;
+ {$IFDEF ANDROID}
+  Access_Coarse_Location := JStringToString(TJManifest_permission.JavaClass.ACCESS_COARSE_LOCATION);
+  Access_Fine_Location := JStringToString(TJManifest_permission.JavaClass.ACCESS_FINE_LOCATION);
+ {$ENDIF}
+ if NOT permissao.VerifyCameraAccess then
+   permissao.Camera(nil, nil)
+ else
+ begin
+  laynovapraga.Visible         := false;
+  btnExcluirPraga.Visible      := false;
+  laynovapraga.Width           := frmPrincipal.Width-20;
+  layNovoMonitoramento.Width   := frmPrincipal.Width-20;
+  btnExcluiPontos.Visible      := false;
+  GeraLista('');
+  layNovoMonitoramento.Visible := false;
+ end;
 end;
 
 procedure TfrmMonitoramento.geraLista(Filtro: string);

@@ -20,12 +20,13 @@ uses
   IdHashMessageDigest,System.ImageList,
   FMX.ImgList, FMX.Media, System.Sensors, System.Sensors.Components,
   FMX.ListView.Types, FMX.ListView.Appearances, FMX.ListView.Adapters.Base,
-  FMX.Gestures, FMX.NumberBox, FMX.ListView
+  FMX.Gestures, FMX.NumberBox, FMX.ListView,u99Permissions,
+  FMX.MediaLibrary.Actions, FMX.StdActns
   {$IF DEFINED(iOS) or DEFINED(ANDROID)}
    ,Androidapi.JNI.Os, Androidapi.Helpers,
    Androidapi.JNI.GraphicsContentViewText,System.Permissions,FMX.DialogService
    {$ENDIF}
-  ;
+  ,Soap.EncdDecd;
 
 type
   TfrmAbastecimento = class(TForm)
@@ -313,6 +314,12 @@ type
     layListaRevisao: TLayout;
     btnListaRevisao: TButton;
     Image15: TImage;
+    btnImg: TRectangle;
+    Image19: TImage;
+    Label43: TLabel;
+    ActionList1: TActionList;
+    ActPhotoLibrary: TTakePhotoFromLibraryAction;
+    ActPhotoCamera: TTakePhotoFromCameraAction;
     procedure btnBuscarMaquinaClick(Sender: TObject);
     procedure EditButton1Click(Sender: TObject);
     procedure EditButton2Click(Sender: TObject);
@@ -360,7 +367,6 @@ type
    {$ENDIF}
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
     procedure ListaProdutosGesture(Sender: TObject;
       const EventInfo: TGestureEventInfo; var Handled: Boolean);
     procedure edtNomeFiltroClick(Sender: TObject);
@@ -386,7 +392,28 @@ type
     procedure EditButton6Click(Sender: TObject);
     procedure Rectangle28Click(Sender: TObject);
     procedure btnListaRevisaoClick(Sender: TObject);
+    procedure btnImgClick(Sender: TObject);
+    procedure Rectangle31Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure btnFotoHorimetroClick(Sender: TObject);
   private
+    permissao : T99Permissions;
+    FImageStream: TStringStream;
+     {$IFDEF ANDROID}
+    PermissaoCamera, PermissaoReadStorage, PermissaoWriteStorage : string;
+    procedure TakePicturePermissionRequestResult(
+        Sender: TObject; const APermissions: TArray<string>;
+        const AGrantResults: TArray<TPermissionStatus>);
+    procedure DisplayMessageCamera(Sender: TObject;
+                const APermissions: TArray<string>;
+                const APostProc: TProc);
+    procedure LibraryPermissionRequestResult(
+        Sender: TObject; const APermissions: TArray<string>;
+        const AGrantResults: TArray<TPermissionStatus>);
+    procedure DisplayMessageLibrary(Sender: TObject;
+                const APermissions: TArray<string>;
+                const APostProc: TProc);
+    {$ENDIF}
     procedure MudarAba(ATabItem: TTabItem; sender: TObject);
     procedure GeraLista(vFiltro:string);
     procedure GeraListaTransferencia(vFiltro:string);
@@ -395,11 +422,12 @@ type
     procedure GeraListaManutencao;
     procedure LimpaCampos;
   public
-    ClipService: IFMXClipboardService;
-    Elapsed: integer;
+    vImgCapture: integer;
     vIdMaquina,vIdoperador,vIdLocalEstoque,vFiltro,vFlagSync,
     vIdAbastecimento,vIdProduto,vIdItemOutros,vILocalOrigem,vIdLocalDestino,
     vIdTransferencia,vIdAtividade:string;
+    function BitmapFromBase64(const base64: string): TBitmap;
+    function Base64FromBitmap(Bitmap: TBitmap): string;
   end;
 
 var
@@ -410,7 +438,55 @@ implementation
 {$R *.fmx}
 
 uses UPrincipal, Maquinas, UOperadorMaquina, UDataContext, ULocalEstoque,
-  UProdutos, UDataFunctions, UAtividadeAbastecimento;
+  UProdutos, UDataFunctions, UAtividadeAbastecimento, UnitCamera,
+  UCamAbastecimento;
+
+function TfrmAbastecimento.Base64FromBitmap(Bitmap: TBitmap): string;
+var
+  Input: TBytesStream;
+  Output: TStringStream;
+begin
+  Input := TBytesStream.Create;
+  try
+    Bitmap.SaveToStream(Input);
+    Input.Position := 0;
+    Output := TStringStream.Create('', TEncoding.ASCII);
+    try
+      Soap.EncdDecd.EncodeStream(Input, Output);
+      Result := Output.DataString;
+    finally
+      Output.Free;
+    end;
+  finally
+    Input.Free;
+  end;
+end;
+
+function TfrmAbastecimento.BitmapFromBase64(const base64: string): TBitmap;
+var
+  Input: TStringStream;
+  Output: TBytesStream;
+begin
+  Input := TStringStream.Create(base64, TEncoding.ASCII);
+  try
+    Output := TBytesStream.Create;
+    try
+      Soap.EncdDecd.DecodeStream(Input, Output);
+      Output.Position := 0;
+      Result := TBitmap.Create;
+      try
+        Result.LoadFromStream(Output);
+      except
+        Result.Free;
+        raise;
+      end;
+    finally
+      Output.Free;
+    end;
+  finally
+    Input.Free;
+  end;
+end;
 
 procedure TfrmAbastecimento.btnBuscarClick(Sender: TObject);
 begin
@@ -595,71 +671,77 @@ begin
  end;
 end;
 
+
+
+procedure TfrmAbastecimento.btnFotoHorimetroClick(Sender: TObject);
+begin
+{$IFDEF ANDROID}
+PermissionsService.RequestPermissions([PermissaoCamera,
+                                       PermissaoReadStorage,
+                                       PermissaoWriteStorage],
+                                       TakePicturePermissionRequestResult,
+                                       DisplayMessageCamera
+                                       );
+{$ENDIF}
+
+{$IFDEF IOS}
+  ActPhotoCamera.Execute;
+{$ENDIF}
+end;
+
+procedure TfrmAbastecimento.btnImgClick(Sender: TObject);
+begin
+ frmCameraAbastecimento := TfrmCameraAbastecimento.Create(Self);
+  try
+    frmCameraAbastecimento.ShowModal(
+    procedure(ModalResult: TModalResult)
+    begin
+    end);
+  finally
+    frmCameraAbastecimento.free;
+  end;
+// frmCameraAbastecimento.Show;
+// MudarAba(tbiImg,sender);
+end;
+
 {$IFDEF ANDROID}
 procedure TfrmAbastecimento.btnLerQrClick(Sender: TObject);
 var
-  Intent : JIntent;
+ vCodigo :string;
 begin
- if assigned(ClipService) then
- begin
-   clipservice.SetClipboard('');
-   ClipService.GetClipboard.IsEmpty;
-   intent := tjintent.Create;
-   intent.setAction(stringtojstring('com.google.zxing.client.android.SCAN'));
-   SharedActivity.startActivityForResult(intent,0);
-   Elapsed := 0;
-   TThread.CreateAnonymousThread(
-    procedure
-    var
-     vBoll:Boolean;
+  FrmCamera:= TFrmCamera.Create(nil);
+  FrmCamera.ShowModal(procedure(ModalResult: TModalResult)
+  begin
+    if ModalResult = 0 then
     begin
-      vBoll := true;
-      TThread.Synchronize(nil,procedure
+     vCodigo         := FrmCamera.codigo;
+     vIdMaquina      := dmFunctions.RetornaNomeMaquina(vCodigo);
+     if (vIdMaquina.Length=0) then
+     begin
+       ShowMessage('Maquina Não Encontrado');
+       edtMaquina.Text        :='';
+       btnListaRevisao.Visible := false;
+       layHorimetro.Height     := 65;
+       Exit;
+     end
+     else
+     begin
+      edtMaquina.Text          := vCodigo;
+      EdtUltimoHorimetro.Text  := dmDB.RetornaHorimetroAtual(vidMaquina);
+      edtProximaRev.Text       := dmDB.RetornaHorimetroProximaRev(vIdMaquina);
+      if edtProximaRev.Text.Length >0 then
       begin
-        while vBoll  do
-        begin
-         if ClipService.GetClipboard.ToString <> 'nil' then
-         begin
-          if ClipService.GetClipboard.ToString.Length>2 then
-          begin
-           Elapsed    := 0;
-           vIdMaquina :='';
-
-           if dmFunctions=nil then
-            dmFunctions := TdmFunctions.Create(Self);
-
-           vIdMaquina := dmFunctions.RetornaNomeMaquina(ClipService.GetClipboard.ToString);
-           edtMaquina.Text :=ClipService.GetClipboard.ToString;
-           if (vIdMaquina.Length=0) then
-           begin
-             layBuscaMaquina.Height := 70;
-             vBoll := false;
-             TThread.sleep(3000);
-             ShowMessage('Maquina Não Encontrado');
-             edtMaquina.Text        :='';
-             layHorimetro.Height    := 65;
-             btnListaRevisao.Visible:= false;
-             Exit;
-           end
-           else
-           begin
-            EdtUltimoHorimetro.Text  := dmDB.vUltimoHorimetro;
-            edtProximaRev.Text       := dmDB.RetornaHorimetroProximaRev(dmDB.vIdMaquinaSel);
-            vBoll := false;
-            if edtProximaRev.Text.Length >0 then
-            begin
-              btnListaRevisao.Visible  := true;
-              layHorimetro.Height      := 95;
-            end;
-           end;
-          end;
-         end
-         else
-           sleep(1000);
-        end;
-      end);
-    end).Start;
- end;
+        btnListaRevisao.Visible := true;
+        layHorimetro.Height     := 95;
+      end
+      else
+      begin
+        btnListaRevisao.Visible := false;
+        layHorimetro.Height     := 65;
+      end
+     end;
+    end
+  end);
 end;
 {$ENDIF}
 
@@ -686,6 +768,8 @@ end;
 
 procedure TfrmAbastecimento.btnNovoClick(Sender: TObject);
 begin
+ dmDB.vImg64Horimetro    :='';
+ dmDB.vImg64Bomba        :='';
  btnListaRevisao.Visible := false;
  layHorimetro.Height     := 60;
  lblPage.Text            := 'Novo Abastecimentos';
@@ -744,7 +828,7 @@ begin
    edtOperador.SetFocus;
    Exit;
  end;
- if (edtHorimetro.Text.Length=0)OR(edtHorimetro.Text='0,00') then
+ if (edtHorimetro.Value<=0) then
  begin
    ShowMessage('Informe o Horimetro!!');
    edtHorimetro.SetFocus;
@@ -781,26 +865,125 @@ begin
   3: IdCombustivel:= '3396';
  end;
 
- dmdb.TAbastecimentoidmaquina.AsString                 := vIdMaquina;
- dmdb.TAbastecimentoidoperador.AsString                := vIdoperador;
- dmdb.TAbastecimentoidusuario.AsString                 := dmDB.vIdUser;
- dmdb.TAbastecimentoidlocalestoque.AsString            := vIdLocalEstoque;
- dmdb.TAbastecimentocombustivel.AsString               := IdCombustivel;
- dmdb.TAbastecimentodataabastecimento.AsDateTime       := edtData.DateTime;
- dmdb.TAbastecimentohora.AsDateTime                    := edtHora.DateTime;
- dmdb.TAbastecimentovolumelt.AsFloat                   := edtLitros.Value;
- dmdb.TAbastecimentohorimetro.AsFloat                  := edtHorimetro.Value;
- dmdb.TAbastecimentoidAtividade.AsString               := vIdAtividade;
- if edtObs.Text.Length>0 then
-  dmdb.TAbastecimentoobs.AsString                      := edtObs.Text;
- try
-   dmdb.TAbastecimento.ApplyUpdates(-1);
-   ShowMessage('Abastecimento Adicionada com sucesso!!');
-   GeraLista('');
-   MudarAba(tbiLista,sender);
- except
-   on E: Exception do
-    ShowMessage('Erro ao salvar Abastecimento:'+E.Message);
+  if(dmDB.vImg64Bomba.Length=0)then
+  begin
+   ShowMessage('Foto da Bomba é Obrigatoria!!');
+   Exit;
+  end;
+ if(dmDB.vImg64Horimetro.Length=0)then
+  begin
+   ShowMessage('Foto do Horímetro é Obrigatoria!!');
+   Exit;
+  end;
+
+ if EdtUltimoHorimetro.Value>edtHorimetro.Value then
+ begin
+   MessageDlg('Horímetro está menor que último registrado, deseja confirmar assim mesmo?', System.UITypes.TMsgDlgType.mtInformation,
+   [System.UITypes.TMsgDlgBtn.mbYes,
+   System.UITypes.TMsgDlgBtn.mbNo
+   ], 0,
+   procedure(const AResult: System.UITypes.TModalResult)
+   begin
+    case AResult of
+     mrYES:
+     begin
+      dmdb.TAbastecimentoidmaquina.AsString                 := vIdMaquina;
+      dmdb.TAbastecimentoidoperador.AsString                := vIdoperador;
+      dmdb.TAbastecimentoidusuario.AsString                 := dmDB.vIdUser;
+      dmdb.TAbastecimentoidlocalestoque.AsString            := vIdLocalEstoque;
+      dmdb.TAbastecimentocombustivel.AsString               := IdCombustivel;
+      dmdb.TAbastecimentodataabastecimento.AsDateTime       := edtData.DateTime;
+      dmdb.TAbastecimentohora.AsDateTime                    := edtHora.DateTime;
+      dmdb.TAbastecimentovolumelt.AsFloat                   := edtLitros.Value;
+      dmdb.TAbastecimentohorimetro.AsFloat                  := edtHorimetro.Value;
+      dmdb.TAbastecimentoidAtividade.AsString               := vIdAtividade;
+      if edtObs.Text.Length>0 then
+       dmdb.TAbastecimentoobs.AsString                      := edtObs.Text;
+      dmdb.TAbastecimentoimg.AsString                       := dmdb.vImg64Horimetro;
+      dmdb.TAbastecimentoimg2.AsString                      := dmdb.vImg64Bomba;
+      try
+       dmdb.TAbastecimento.ApplyUpdates(-1);
+       ShowMessage('Abastecimento Adicionada com sucesso!!');
+       GeraLista('');
+       MudarAba(tbiLista,sender);
+      except
+       on E: Exception do
+        ShowMessage('Erro ao salvar Abastecimento:'+E.Message);
+      end;
+     end;
+     mrNo:
+      exit;
+    end;
+   end);
+ end
+ else
+ begin
+   if(edtHorimetro.Value-EdtUltimoHorimetro.Value)>=50 then
+   begin
+     MessageDlg('Último abastecimento foi a mais de 50 horas, deseja confirmar assim mesmo?', System.UITypes.TMsgDlgType.mtInformation,
+     [System.UITypes.TMsgDlgBtn.mbYes,
+     System.UITypes.TMsgDlgBtn.mbNo
+     ], 0,
+     procedure(const AResult: System.UITypes.TModalResult)
+     begin
+      case AResult of
+       mrYES:
+       begin
+        dmdb.TAbastecimentoidmaquina.AsString                 := vIdMaquina;
+        dmdb.TAbastecimentoidoperador.AsString                := vIdoperador;
+        dmdb.TAbastecimentoidusuario.AsString                 := dmDB.vIdUser;
+        dmdb.TAbastecimentoidlocalestoque.AsString            := vIdLocalEstoque;
+        dmdb.TAbastecimentocombustivel.AsString               := IdCombustivel;
+        dmdb.TAbastecimentodataabastecimento.AsDateTime       := edtData.DateTime;
+        dmdb.TAbastecimentohora.AsDateTime                    := edtHora.DateTime;
+        dmdb.TAbastecimentovolumelt.AsFloat                   := edtLitros.Value;
+        dmdb.TAbastecimentohorimetro.AsFloat                  := edtHorimetro.Value;
+        dmdb.TAbastecimentoidAtividade.AsString               := vIdAtividade;
+        if edtObs.Text.Length>0 then
+         dmdb.TAbastecimentoobs.AsString                      := edtObs.Text;
+        dmdb.TAbastecimentoimg.AsString                       := dmdb.vImg64Horimetro;
+        dmdb.TAbastecimentoimg2.AsString                      := dmdb.vImg64Bomba;
+        try
+         dmdb.TAbastecimento.ApplyUpdates(-1);
+         ShowMessage('Abastecimento Adicionada com sucesso!!');
+         GeraLista('');
+         MudarAba(tbiLista,sender);
+        except
+         on E: Exception do
+          ShowMessage('Erro ao salvar Abastecimento:'+E.Message);
+        end;
+       end;
+       mrNo:
+        exit;
+      end;
+     end);
+   end
+   else
+   begin
+    dmdb.TAbastecimentoidmaquina.AsString                 := vIdMaquina;
+    dmdb.TAbastecimentoidoperador.AsString                := vIdoperador;
+    dmdb.TAbastecimentoidusuario.AsString                 := dmDB.vIdUser;
+    dmdb.TAbastecimentoidlocalestoque.AsString            := vIdLocalEstoque;
+    dmdb.TAbastecimentocombustivel.AsString               := IdCombustivel;
+    dmdb.TAbastecimentodataabastecimento.AsDateTime       := edtData.DateTime;
+    dmdb.TAbastecimentohora.AsDateTime                    := edtHora.DateTime;
+    dmdb.TAbastecimentovolumelt.AsFloat                   := edtLitros.Value;
+    dmdb.TAbastecimentohorimetro.AsFloat                  := edtHorimetro.Value;
+    dmdb.TAbastecimentoidAtividade.AsString               := vIdAtividade;
+    if edtObs.Text.Length>0 then
+     dmdb.TAbastecimentoobs.AsString                      := edtObs.Text;
+    dmdb.TAbastecimentoimg.AsString                       := dmdb.vImg64Horimetro;
+    dmdb.TAbastecimentoimg2.AsString                      := dmdb.vImg64Bomba;
+    try
+     dmdb.TAbastecimento.ApplyUpdates(-1);
+     ShowMessage('Abastecimento Adicionada com sucesso!!');
+     GeraLista('');
+     MudarAba(tbiLista,sender);
+    except
+     on E: Exception do
+      ShowMessage('Erro ao salvar Abastecimento:'+E.Message);
+    end;
+   end;
  end;
 end;
 
@@ -823,7 +1006,20 @@ end;
 
 procedure TfrmAbastecimento.btnVoltar2Click(Sender: TObject);
 begin
-  MudarAba(tbiLista,sender);
+   MessageDlg('Deseja Realmente Sair da Tela?', System.UITypes.TMsgDlgType.mtInformation,
+   [System.UITypes.TMsgDlgBtn.mbYes,
+   System.UITypes.TMsgDlgBtn.mbNo
+   ], 0,
+   procedure(const AResult: System.UITypes.TModalResult)
+   begin
+    case AResult of
+     mrYES:
+     begin
+       MudarAba(tbiLista,sender);
+     end;
+     mrNo:
+    end;
+   end);
 end;
 
 procedure TfrmAbastecimento.btnVoltarClick(Sender: TObject);
@@ -863,6 +1059,26 @@ begin
    btnVoltarProduto.Opacity :=1;
 end;
 
+procedure TfrmAbastecimento.DisplayMessageCamera(Sender: TObject;
+  const APermissions: TArray<string>; const APostProc: TProc);
+begin
+  TDialogService.ShowMessage('O app precisa acessar as fotos do seu dispositivo',
+  procedure(const AResult: TModalResult)
+  begin
+     APostProc;
+  end);
+end;
+
+procedure TfrmAbastecimento.DisplayMessageLibrary(Sender: TObject;
+  const APermissions: TArray<string>; const APostProc: TProc);
+begin
+ TDialogService.ShowMessage('O app precisa acessar a câmera e as fotos do seu dispositivo',
+  procedure(const AResult: TModalResult)
+  begin
+    APostProc;
+  end);
+end;
+
 procedure TfrmAbastecimento.btnListaRevisaoClick(Sender: TObject);
 begin
  dmDB.GeraListaMaquina(vIdMaquina);
@@ -889,6 +1105,24 @@ end;
 procedure TfrmAbastecimento.Rectangle28Click(Sender: TObject);
 begin
   MudarAba(tbiCad,sender);
+end;
+
+procedure TfrmAbastecimento.Rectangle31Click(Sender: TObject);
+begin
+ MudarAba(tbiCad,sender);
+end;
+
+procedure TfrmAbastecimento.TakePicturePermissionRequestResult(Sender: TObject;
+  const APermissions: TArray<string>;
+  const AGrantResults: TArray<TPermissionStatus>);
+begin
+  if (Length(AGrantResults) = 3) and
+     (AGrantResults[0] = TPermissionStatus.Granted) and
+     (AGrantResults[1] = TPermissionStatus.Granted) and
+     (AGrantResults[2] = TPermissionStatus.Granted) then
+          ActPhotoCamera.Execute
+  else
+    TDialogService.ShowMessage('Você não tem permissão para tirar fotos');
 end;
 
 procedure TfrmAbastecimento.tbPrincipalChange(Sender: TObject);
@@ -934,6 +1168,7 @@ procedure TfrmAbastecimento.EditButton3Click(Sender: TObject);
 begin
   frmprodutos := Tfrmprodutos.Create(Self);
   try
+    frmProdutos.vTipo :='3';
     frmprodutos.ShowModal(
     procedure(ModalResult: TModalResult)
     begin
@@ -997,15 +1232,18 @@ begin
     frmMaquinas.ShowModal(
     procedure(ModalResult: TModalResult)
     begin
-      edtMaquina.Text          := dmDB.vMarcaModelo;
-      vIdMaquina               := dmDB.vIdMaquinaSel;
-      EdtUltimoHorimetro.Text  := dmDB.vUltimoHorimetro;
-      edtProximaRev.Text       := dmDB.RetornaHorimetroProximaRev(dmDB.vIdMaquinaSel);
+      if dmDB.vMarcaModelo.Length>0 then
+      begin
+       edtMaquina.Text          := dmDB.vMarcaModelo;
+       vIdMaquina               := dmDB.vIdMaquinaSel;
+       EdtUltimoHorimetro.Text  := dmDB.vUltimoHorimetro;
+       edtProximaRev.Text       := dmDB.RetornaHorimetroProximaRev(dmDB.vIdMaquinaSel);
       if edtProximaRev.Text.Length >0 then
       begin
         btnListaRevisao.Visible := true;
         layHorimetro.Height     := 95;
       end;
+     end;
     end);
   finally
     frmMaquinas.free;
@@ -1031,11 +1269,14 @@ begin
  btnExcluiProduto.Visible   := false;
 end;
 
-procedure TfrmAbastecimento.FormCreate(Sender: TObject);
+
+procedure TfrmAbastecimento.FormActivate(Sender: TObject);
 begin
- if not TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, IInterface(ClipService)) then
-    ClipService := nil;
-  Elapsed := 0;
+{$IFDEF ANDROID}
+     PermissaoCamera := JStringToString(TJManifest_permission.JavaClass.CAMERA);
+     PermissaoReadStorage := JStringToString(TJManifest_permission.JavaClass.READ_EXTERNAL_STORAGE);
+     PermissaoWriteStorage := JStringToString(TJManifest_permission.JavaClass.WRITE_EXTERNAL_STORAGE);
+{$ENDIF}
 end;
 
 procedure TfrmAbastecimento.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1053,7 +1294,14 @@ end;
 
 procedure TfrmAbastecimento.FormShow(Sender: TObject);
 begin
+ dmDB.vImg64Bomba     :='';
+ dmDB.vImg64Horimetro :='';
+
+ btnImg.Visible          := true;
+ permissao               := T99Permissions.Create;
  btnExcluirTranferencia.Visible := false;
+ if NOT permissao.VerifyCameraAccess then
+   permissao.Camera(nil, nil);
  layBuscaMaquina.Height  := 70;
  lblPage.Text            := 'Abastecimentos';
  layNewOutros.Visible    := false;
@@ -1138,8 +1386,13 @@ begin
 
        txt      := TListItemText(Objects.FindDrawable('Text20'));
        txt.Text := 'Observação: ';
+
        txt      := TListItemText(Objects.FindDrawable('Text19'));
        txt.Text := dmDB.TAbastecimentoobs.AsString;
+       
+       txt      := TListItemText(Objects.FindDrawable('Text22'));
+       txt.Text := 'Fotos';
+
 
 
        txt      := TListItemText(Objects.FindDrawable('Text16'));
@@ -1148,8 +1401,15 @@ begin
        img := TListItemImage(Objects.FindDrawable('Image10'));
        img.Bitmap     := frmPrincipal.imgCombustivel.Bitmap;
 
+       img := TListItemImage(Objects.FindDrawable('Image10'));
+       img.Bitmap     := frmPrincipal.imgCombustivel.Bitmap;
+
        img := TListItemImage(Objects.FindDrawable('Image11'));
        img.Bitmap     := frmPrincipal.imgOutrosProdutos.Bitmap;
+
+       img := TListItemImage(Objects.FindDrawable('Image21'));
+       img.Bitmap     := frmPrincipal.imgFotos.Bitmap;
+
      end;
      dmDB.TAbastecimento.Next;
    end;
@@ -1321,6 +1581,19 @@ begin
  end;
 end;
 
+procedure TfrmAbastecimento.LibraryPermissionRequestResult(Sender: TObject;
+  const APermissions: TArray<string>;
+  const AGrantResults: TArray<TPermissionStatus>);
+begin
+ if (Length(AGrantResults) = 2) and
+           (AGrantResults[0] = TPermissionStatus.Granted) and
+           (AGrantResults[1] = TPermissionStatus.Granted) then
+                ActPhotoLibrary.Execute
+        else
+                TDialogService.ShowMessage('Você não tem permissão para acessar as fotos');
+
+end;
+
 procedure TfrmAbastecimento.LimpaCampos;
 begin
   edtMaquina.Text          :='';
@@ -1342,11 +1615,14 @@ end;
 procedure TfrmAbastecimento.ListaItemClickEx(const Sender: TObject;
   ItemIndex: Integer; const LocalClickPos: TPointF;
   const ItemObject: TListItemDrawable);
+var
+ vImgBomba,vImgHorimetro:string;
 begin
   vIdAbastecimento   := TAppearanceListViewItem(Lista.Selected).Objects.FindObjectT<TListItemText>
    ('Text3').TagString;
   vFlagSync          := TAppearanceListViewItem(Lista.Selected).Objects.FindObjectT<TListItemText>
    ('Text6').TagString;
+  
   if ItemObject is TListItemImage then
   begin
     if TListItemImage(ItemObject).Name='Image11' then
@@ -1354,6 +1630,22 @@ begin
      btnExcluiProduto.Visible   := false;
      GeraListaProdutos(vIdAbastecimento,vFiltro);
      MudarAba(tbiProdutos,sender);
+     Exit;
+    end;
+
+    if TListItemImage(ItemObject).Name='Image21' then
+    begin
+     btnExcluiProduto.Visible  := false;
+     dmDB.AbreFotos(vIdAbastecimento);
+     frmCameraAbastecimento    := TfrmCameraAbastecimento.Create(Self);
+      try
+        frmCameraAbastecimento.ShowModal(
+        procedure(ModalResult: TModalResult)
+        begin
+        end);
+      finally
+        frmCameraAbastecimento.free;
+      end;
      Exit;
     end;
   end;

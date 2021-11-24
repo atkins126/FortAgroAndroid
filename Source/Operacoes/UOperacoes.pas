@@ -661,6 +661,7 @@ type
     procedure GeraListaReceituario;
     procedure GerarListaDetReceituario(IdReceituario: string);
     procedure GeraVazao(idOP:string);
+    procedure FinalizaOperacaoExtra;
 
     procedure CarregaCombo;
   end;
@@ -736,26 +737,15 @@ begin
  lblTotalHoras.Text       := 'Total Horas: '+dmDB.RetornaHorasTotais(vIdOp);
  lblTotalProdutos.Text    := 'Total Registro: '+intToStr(ListaProdutos.Items.Count);
  lblTotalOcorrencia.Text  := 'Total Registro: '+intToStr(ListaOcorrencia.Items.Count);
-// if dmDB.qryOpSafraidoperacao.AsInteger=1 then
-// begin
-//  lblTalhao.Text           := dmDB.qryOpSafraTalhao.AsString;
-//  lblAreaPrev.Text         := dmDB.qryOpSafraareaprevista.AsString;
-//  lblAreaReal.Text         := dmDB.qryOpSafraarearealizada.AsString;
-//  lblTalhaoRec.Text           := dmDB.qryOpSafraTalhao.AsString;
-//  lblAreaPrevRec.Text         := dmDB.qryOpSafraareaprevista.AsString;
-//  lblAreaRealRec.Text         := dmDB.qryOpSafraarearealizada.AsString;
-// end
-// else
-// begin
-  lblTalhao.Text          := dmDB.RetornaTalhoesPul(dmDB.qryOpSafraid.AsString);
-  lblAreaPrev.Text        := dmDB.qryOpSafraareaprevista.AsString;
-  lblAreaReal.Text        := dmDB.qryOpSafraarearealizada.AsString;
-  lblTalhaoRec.Text       := dmDB.RetornaTalhoesPul(dmDB.qryOpSafraid.AsString);
-  lblAreaPrevRec.Text     := dmDB.qryOpSafraareaprevista.AsString;
-  lblAreaRealRec.Text     := dmDB.qryOpSafraarearealizada.AsString;
-  lblIdREC.Text           := dmDB.qryOpSafraidreceituario.AsString;
 
-// end;
+ lblTalhao.Text          := dmDB.RetornaTalhoesPul(dmDB.qryOpSafraid.AsString);
+ lblAreaPrev.Text        := dmDB.qryOpSafraareaprevista.AsString;
+ lblAreaReal.Text        := dmDB.qryOpSafraarearealizada.AsString;
+ lblTalhaoRec.Text       := dmDB.RetornaTalhoesPul(dmDB.qryOpSafraid.AsString);
+ lblAreaPrevRec.Text     := dmDB.qryOpSafraareaprevista.AsString;
+ lblAreaRealRec.Text     := dmDB.qryOpSafraarearealizada.AsString;
+ lblIdREC.Text           := dmDB.qryOpSafraidreceituario.AsString;
+
  lblAtividade.Text        := dmDB.qryOpSafraOperacao.AsString;
  lblDataInicio.Text       := dmDB.qryOpSafradatainicio.AsString;
  lblDataFim.Text          := dmDB.qryOpSafradatafim.AsString;
@@ -839,9 +829,6 @@ begin
  end;
  edtHorasTrabalhada.Value                              := edtHoraFim.Value-edtHoraIni.Value;
 
- dmDb.TOperacaoSafraMaquinas.Close;
- dmDb.TOperacaoSafraMaquinas.Open;
- dmDb.TOperacaoSafraMaquinas.Insert;
  dmDb.TOperacaoSafraMaquinasidoperacaotalhao.AsString   := vIdOP;
  dmDb.TOperacaoSafraMaquinasidusuario.AsString          := dmDb.vIdUser;
 
@@ -961,12 +948,6 @@ begin
    edtAtividade.SetFocus;
    Exit;
  end;
-// if edtTalhao.Text.Length=0 then
-// begin
-//   myShowMenssagem('Informe o Talhão!!');
-//   edtTalhao.SetFocus;
-//   Exit;
-// end;
  if edtDataIniAtividade.Text.Length=0 then
  begin
    myShowMenssagem('Informe a Data de Inicio!!');
@@ -999,15 +980,8 @@ begin
     edtDataFimAtividade.SetFocus;
     Exit;
   end;
-//  if edtAreaReal.Text.Length=0 then
-//  begin
-//    myShowMenssagem('Informe a Area Realizada!!');
-//    edtAreaReal.SetFocus;
-//    Exit;
-//  end;
     dmDB.AbreDetTalhoesPulverizacao(dmDB.TOperacaoSafraid.AsString);
     dmDB.TOperacaoSafraidoperacao.AsString            := vIdAtividade;
-//    dmDB.TOperacaoSafraidtalhao.AsString              := vIdTalhao;
     dmDB.TOperacaoSafraidResponsavel.AsString         := dmDB.vIdUser;
     dmDB.TOperacaoSafradatainicio.AsDateTime          := edtDataIniAtividade.Date;
     dmDB.TOperacaoSafradatafim.AsDateTime             := edtDataFimAtividade.Date;
@@ -1156,7 +1130,7 @@ begin
  else
  begin
    try
-    dmDB.DeleteOperacao(vIdOP);
+    dmDB.DeleteOperacao(vIdOP,vIdReceituarioSel);
     myShowMenssagem('Operação deletada com sucesso!');
     GeraLista('');
    except
@@ -1264,13 +1238,21 @@ begin
    myShowMenssagem('Operação ja Finalizada!');
    Exit;
  end;
+
+ dmDB.AbreDetTalhoesPulverizacao(vIdOp);
+ if dmDB.TDetTalhoesPul.RecordCount=0 then
+ begin
+   myShowMenssagem('Nenhum talhão adicionado, adicione antes de finalizar!');
+   Exit;
+ end;
+
  if dmDB.VerificaMaquinasOperacao(vIdOP) then
  begin
    myShowMenssagem('Informe as maquinas utilizadas antes de finalizar!');
    Exit;
  end;
 
- if (vIdOPTipo<>'3') and (vIdOPTipo<>'4') and (vIdOPTipo<>'5') then
+ if (vIdOPTipo<>'3') and (vIdOPTipo<>'4') and (vIdOPTipo<>'5') and (vIdOPTipo<>'6') then
  begin
    if dmDB.VerificaProdutosOperacao(vIdOP) then
    begin
@@ -1376,7 +1358,8 @@ begin
 
           mudarAba(TbiNovaOperacao,sender);
        end;
-       if dmDB.TOperacaoSafraidoperacao.AsInteger=3 then
+       if (dmDB.TOperacaoSafraidoperacao.AsInteger=3)or
+        (dmDB.TOperacaoSafraidoperacao.AsInteger=6) then
         begin
           cbxTipoOperacaoPulverizacao.Items.Clear;
           cbxTipoOperacaoPulverizacao.Items.Add(dmDB.TOperacaoSafratipoterraaereo.AsString);
@@ -1436,32 +1419,32 @@ begin
           TabAuxCadAtividade.ActiveTab         := tbiPulverizacao;
           LayDetAtividade.Visible              := true;
           recSelectAtividade.Visible           := false;
-          cbxVariedade.ItemIndex                     := cbxVariedade.Items.IndexOf(dmDB.TOperacaoSafraVariedade.AsString);
-          vIdAtividade                               := dmDB.TOperacaoSafraidoperacao.AsString;
-          vIdCultura                                 := dmDB.TOperacaoSafraidcultura.AsString;
-          cbxCulturaPulverizacao.ItemIndex           := cbxCulturaPulverizacao.Items.IndexOf(dmDB.TOperacaoSafraCultura.AsString);
-          vIdSafra                                   := dmDB.TOperacaoSafraidsafra.AsString;
-          dmDB.vIdUser                               := dmDB.TOperacaoSafraidResponsavel.AsString;
-          edtDataInicioPul.Date                      := dmDB.TOperacaoSafradatainicio.AsDateTime;
-          edtAreaPrev.Text                           := dmDB.TOperacaoSafraareaPrevista.Asstring;
+          cbxVariedade.ItemIndex               := cbxVariedade.Items.IndexOf(dmDB.TOperacaoSafraVariedade.AsString);
+          vIdAtividade                         := dmDB.TOperacaoSafraidoperacao.AsString;
+          vIdCultura                           := dmDB.TOperacaoSafraidcultura.AsString;
+          cbxCulturaPulverizacao.ItemIndex     := cbxCulturaPulverizacao.Items.IndexOf(dmDB.TOperacaoSafraCultura.AsString);
+          vIdSafra                             := dmDB.TOperacaoSafraidsafra.AsString;
+          dmDB.vIdUser                         := dmDB.TOperacaoSafraidResponsavel.AsString;
+          edtDataInicioPul.Date                := dmDB.TOperacaoSafradatainicio.AsDateTime;
+          edtAreaPrev.Text                     := dmDB.TOperacaoSafraareaPrevista.Asstring;
           if dmDB.TOperacaoSafradatafim.AsString.Length=0 then
            edtDataFimPul.Text                  := ''
           else
-           edtDataFimPul.Date                        := dmDB.TOperacaoSafradatafim.AsDateTime;
-          edtObservacaoAtividade.Text                := dmDB.TOperacaoSafraobservacao.AsString;
-          vidVariedade                               := dmDB.TOperacaoSafraidvariedade.AsString;
+           edtDataFimPul.Date                  := dmDB.TOperacaoSafradatafim.AsDateTime;
+          edtObservacaoAtividade.Text          := dmDB.TOperacaoSafraobservacao.AsString;
+          vidVariedade                         := dmDB.TOperacaoSafraidvariedade.AsString;
           mudarAba(TbiNovaOperacao,sender);
        end;
       end;
      end;
    end);
-   end
-   else
-   begin
-     dmDB.AlteraStatusOperacao(vidOp);
-      myShowMenssagem('Operacao finalizada com sucesso!');
-      GeraLista('');
-   end;
+ end
+ else
+ begin
+  FinalizaOperacaoExtra;
+  myShowMenssagem('Operacao finalizada com sucesso!');
+  GeraLista('');
+ end;
 end;
 
 procedure TfrmOperacao.btnHabilitaSyncClick(Sender: TObject);
@@ -1478,23 +1461,14 @@ end;
 
 procedure TfrmOperacao.btnMaquinasClick(Sender: TObject);
 begin
-// TThread.CreateAnonymousThread(procedure
-// begin
-//   TThread.Synchronize(nil, procedure
-//   begin
-     btnEditar.Enabled        := vStatusConfere='1';
-     btnNovaMaquina.Enabled   := (vStatusConfere='1') or (vIdOPTipo='5');
-     btnExluirMaquina.Enabled := (vStatusConfere='1') or (vIdOPTipo='5');
-     layBtnDet.Enabled := false;
-//   end);
-   GeraListaMaquinas;
-   tabDet.ActiveTab   := tbiMaquinasOP;
-   tabDet.Visible     := true;
-//   TThread.Synchronize(nil, procedure
-//   begin
-     layBtnDet.Enabled := true;
-//   end);
-// end).Start;
+  btnEditar.Enabled        := vStatusConfere='1';
+  btnNovaMaquina.Enabled   := (vStatusConfere='1') or (vIdOPTipo='5');
+  btnExluirMaquina.Enabled := (vStatusConfere='1') or (vIdOPTipo='5');
+  layBtnDet.Enabled := false;
+  GeraListaMaquinas;
+  tabDet.ActiveTab   := tbiMaquinasOP;
+  tabDet.Visible     := true;
+  layBtnDet.Enabled := true;
 end;
 
 procedure TfrmOperacao.btnNovaMaquinaClick(Sender: TObject);
@@ -1510,9 +1484,9 @@ begin
    edtRomaneio.Visible    := false;
  end;
  LimpaCampos;
-// dmDb.TOperacaoSafraMaquinas.Close;
-// dmDb.TOperacaoSafraMaquinas.Open;
-// dmDb.TOperacaoSafraMaquinas.Insert;
+ dmDb.TOperacaoSafraMaquinas.Close;
+ dmDb.TOperacaoSafraMaquinas.Open;
+ dmDb.TOperacaoSafraMaquinas.Insert;
 // dmDb.TOperacaoSafraMaquinasidoperacaotalhao.AsString  := vIdOP;
 // dmDb.TOperacaoSafraMaquinasidusuario.AsString         := dmDb.vIdUser;
  MudarAba(tbiMaquinas,sender);
@@ -1590,7 +1564,7 @@ begin
    edtDataIniAtividade.SetFocus;
    Exit;
  end;
- if (vIdAtividade='2') or (vIdAtividade='3') then
+ if (vIdAtividade='2') or (vIdAtividade='3')or (vIdAtividade='6') then
  begin
    if cbxTipoOperacaoPulverizacao.ItemIndex=-1 then
    begin
@@ -1620,7 +1594,7 @@ begin
      Exit;
    end;
  end;
- if (vIdAtividade='3') or (vIdAtividade='4') then
+ if (vIdAtividade='3') or (vIdAtividade='4')or (vIdAtividade='6') then
  begin
    if cbxVariedade.ItemIndex=-1 then
    begin
@@ -1628,7 +1602,7 @@ begin
      cbxVariedade.SetFocus;
      Exit;
    end;
-   if (vIdAtividade='3') then
+   if (vIdAtividade='3')or (vIdAtividade='6') then
    begin
      if cbxCobertura.ItemIndex=-1 then
      begin
@@ -1677,7 +1651,7 @@ begin
     dmDB.TOperacaoSafraidreceituario.AsString  := vIdreceituario;
   end;
 
-  if vIdAtividade='3' then
+  if (vIdAtividade='3') or (vIdAtividade='6') then
   begin
    dmDB.TOperacaoSafraidcobertura.AsString         := vIdCobertura;
    dmDB.TOperacaoSafraQualidadeCobertura.AsString  := cbxQualidadeCobertura.Selected.Text;
@@ -1742,28 +1716,18 @@ end;
 
 procedure TfrmOperacao.btnTalhoesClick(Sender: TObject);
 begin
- TThread.CreateAnonymousThread(procedure
- begin
-   TThread.Synchronize(nil, procedure
-   begin
-     btnConfirmaTalhao.Enabled :=vStatusConfere='1';
-     btnExcluirTalhao.Enabled  :=vStatusConfere='1';
-     BtnAddTalhao.Enabled      :=vStatusConfere='1';
-
-     layBtnDet.Enabled := false;
-      vDetalhes := 1;
-     BindSourceDB5.DataSet := nil;
-     dmDB.AbreDetTalhoesPulverizacao(vIdOp);
-     lblTotalRegistro.Text            := IntToStr(GridTalhoesPul.RowCount);
-     vIdPul                           := vIdOp;
-     BindSourceDB5.DataSet            := dmDB.TDetTalhoesPul;
-     recSelectAtividade.Visible       := false;
-     TabAuxCadAtividade.TabPosition   := TTabPosition.None;
-     TabAuxCadAtividade.ActiveTab     := tbiTalhoesPuverizacao;
-     layBtnDet.Enabled                := true;
-     MudarAba(TbiNovaOperacao,sender);
-   end);
- end).Start;
+ layBtnDet.Enabled := false;
+  vDetalhes := 1;
+ BindSourceDB5.DataSet := nil;
+ dmDB.AbreDetTalhoesPulverizacao(vIdOp);
+ lblTotalRegistro.Text            := IntToStr(GridTalhoesPul.RowCount);
+ vIdPul                           := vIdOp;
+ BindSourceDB5.DataSet            := dmDB.TDetTalhoesPul;
+ recSelectAtividade.Visible       := false;
+ TabAuxCadAtividade.TabPosition   := TTabPosition.None;
+ TabAuxCadAtividade.ActiveTab     := tbiTalhoesPuverizacao;
+ layBtnDet.Enabled                := true;
+ MudarAba(TbiNovaOperacao,sender);
 end;
 
 procedure TfrmOperacao.btnVazaoClick(Sender: TObject);
@@ -1859,7 +1823,7 @@ begin
    dmDB.TOperacaoSafrastatus.AsInteger        := 1;
    dmDB.TOperacaoSafraidcultura.AsInteger     := 90001;
    dmDB.TOperacaoSafraidvariedade.AsInteger   := 90001;
-   dmDB.TOperacaoSafraidtalhao.AsInteger      := 90001;
+   dmDB.TOperacaoSafraidtalhao.AsInteger      := 0;
    try
     dmDB.TOperacaoSafra.ApplyUpdates(-1);
     vIdOP       := intToStr(idOperacao);
@@ -1867,9 +1831,10 @@ begin
     myShowMenssagem('Operaçao cadastrada com sucesso, informe as maquinas!');
     btnProdutos.Visible   := false;
     btnOcorrencia.Visible := false;
-    btnTalhoes.Visible    := false;
+    btnTalhoes.Visible    := true;
     btnVazao.Visible      := false;
-    MudarAba(tbiMaquinas,sender);
+    Filtrar;
+    MudarAba(TabLista,sender);
    except
     on E: Exception do
      myShowMenssagem('Erro ao salvar Ocorrencia:'+E.Message);
@@ -2047,7 +2012,7 @@ begin
   dmDB.AtualizaAreaPrevPul(vIdPul);
   if vFinalizandoOP=0 then
    myShowMenssagem('Operação Registrada com Sucesso!!')
-  else
+  else //finalizacao
   begin
    if lblAreaTotalReal.Text = 'Area Real.: 0' then
    begin
@@ -2069,10 +2034,11 @@ begin
      dmDB.TOperacaoSafraidcultura.AsString      := vIdCultura;
      dmDB.TOperacaoSafraidreceituario.AsString  := vIdreceituario;
      dmDB.TOperacaoSafrastatus.AsInteger        := 2;
+     dmDB.TOperacaoSafraFlagSync.AsInteger      := 9000;
      dmDB.TOperacaoSafra.ApplyUpdates(-1);
      dmDB.AlteraStatusReceituario(vIdreceituario,'2');
    end;
-   if vTipoOperacao=3 then
+   if (vTipoOperacao=3) or (vTipoOperacao=6) then
    begin
      dmDB.TOperacaoSafraidoperacao.AsString     := vIdAtividade;
      dmDB.TOperacaoSafraidsafra.AsString        := vIdSafra;
@@ -2087,6 +2053,7 @@ begin
      dmDB.TOperacaoSafraidvariedade.AsString    := vIdVariedade;
      dmDB.TOperacaoSafrastatus.AsInteger        := 2;
      dmDB.TOperacaoSafraQualidadeCobertura.AsString := cbxQualidadeCobertura.Selected.Text;
+     dmDB.TOperacaoSafraFlagSync.AsInteger      := 9000;
      dmDB.TOperacaoSafra.ApplyUpdates(-1);
    end;
    if vTipoOperacao=4 then
@@ -2104,6 +2071,7 @@ begin
      dmDB.TOperacaoSafraidOpMaster.AsString     := vIdOp;
      dmDB.TOperacaoSafraidtalhao.AsString       := dmDB.TDetTalhoesPulidTalhao.AsString;
      dmDB.TOperacaoSafraarearealizada.AsString  := dmDB.RetornaAreaRealizada(vIdPul);
+     dmDB.TOperacaoSafraFlagSync.AsInteger      := 9000;
      dmDB.TOperacaoSafra.ApplyUpdates(-1);
    end
    else
@@ -2140,12 +2108,13 @@ begin
        dmDB.TOperacaoSafraidtipoaplicacaosolido.AsString := vIdTipoAplicacaoSolido;
        dmDB.TOperacaoSafratipoterraaereo.AsString        := cbxTipoAplicacaoSolido.Selected.Text;
       end;
-      if vTipoOperacao=3 then
+      if(vTipoOperacao=3) or (vTipoOperacao=6) then
       begin
        dmDB.TOperacaoSafraidcultura.AsString             := vIdCultura;
        dmDB.TOperacaoSafraidcobertura.AsString           := vIdCobertura;
        dmDB.TOperacaoSafraQualidadeCobertura.AsString    := cbxQualidadeCobertura.Selected.Text;
        dmDB.TOperacaoSafraidvariedade.AsString           := vIdVariedade;
+       dmDB.TOperacaoSafratipoterraaereo.AsString        := cbxTipoOperacaoPulverizacao.Selected.Text;
       end;
       if vTipoOperacao=4 then
       begin
@@ -2187,7 +2156,6 @@ begin
          dmdb.TOperacaoSafraMaquinasdata.AsDateTime            := dmDB.qryQuebraMaquinasPuldata.AsDateTime;
          dmdb.TOperacaoSafraMaquinasobservacao.AsString        := dmDB.qryQuebraMaquinasPulobservacao.AsString;
          dmdb.TOperacaoSafraMaquinasidOperador.AsString        := dmDB.qryQuebraMaquinasPulidOperador.AsString;
-
          dmdb.TOperacaoSafraMaquinasidUsuario.AsString         := dmDB.vIdUser;
          dmdb.TOperacaoSafraMaquinas.ApplyUpdates(-1);
          dmDB.qryQuebraMaquinasPul.Next;
@@ -2498,7 +2466,7 @@ begin
         BindSourceDB6.DataSet := dmDB.TCulturas;
         LayDetAtividade.Visible := true;
       end;
-      if vIdAtividade='3' then
+      if (vIdAtividade='3') OR (vIdAtividade='6') then
       begin
         cbxCulturaApl.Visible:= true;
         cbxTipoOperacaoPulverizacao.Items.Clear;
@@ -2598,6 +2566,7 @@ procedure TfrmOperacao.EditButton4Click(Sender: TObject);
 begin
   frmprodutos := Tfrmprodutos.Create(Self);
   try
+    frmprodutos.vTipo :='1';
     frmprodutos.ShowModal(
     procedure(ModalResult: TModalResult)
     begin
@@ -2637,6 +2606,8 @@ begin
     frmCadReceituario.ShowModal(
     procedure(ModalResult: TModalResult)
     begin
+     if dmDB.vIdReceituario.Length>0 then
+     begin
       edtReceituario.Text := dmDB.vNomeReceituario;
       vIdReceituario      := dmDB.vIdReceituario;
       Obs := dmDB.RetornaObsReceituario(vIdReceituario);
@@ -2644,6 +2615,7 @@ begin
       begin
         myShowMenssagem('Observação:'+Obs);
       end;
+     end;
     end);
   finally
     frmCadReceituario.free;
@@ -2764,6 +2736,70 @@ begin
     vFiltro := ' AND o.datainicio='+FormatDateTime('yyyy-mm-dd',edtDataFiltro.Date).QuotedString;
   end;
   GeraLista(vFiltro);
+end;
+
+procedure TfrmOperacao.FinalizaOperacaoExtra;
+begin
+    dmDB.AbreOperacaoExta(vidOp);
+    dmDB.AlteraStatusOperacao(vidOp);
+    dmDB.AbreDetTalhoesPulverizacao(vIdOp);
+    dmDB.TDetTalhoesPul.First;
+    while not dmDB.TDetTalhoesPul.eof do
+    begin
+      dmDB.TOperacaoSafra.Close;
+      dmDB.TOperacaoSafra.Open;
+      dmDB.TOperacaoSafra.Insert;
+      dmDB.TOperacaoSafraid.AsInteger                  := RetornaIdOperacao;
+      dmDB.TOperacaoSafraidoperacao.AsString           := dmDB.TOperacaoExtraidoperacao.AsString;
+      dmDB.TOperacaoSafraidsafra.AsString              := vIdSafra;
+      dmDB.TOperacaoSafraidResponsavel.AsString        := dmDB.vIdUser;
+      dmDB.TOperacaoSafradatainicio.AsDateTime         := dmDB.TOperacaoExtradatainicio.AsDateTime;
+      dmDB.TOperacaoSafradatafim.AsDateTime            := dmDB.TOperacaoExtradatafim.AsDateTime;
+      dmDB.TOperacaoSafraidtalhao.AsString             := dmDB.TDetTalhoesPulidTalhao.AsString;
+      dmDB.TOperacaoSafraobservacao.AsString           := dmDB.TOperacaoExtraobservacao.AsString;
+      dmDB.TOperacaoSafrafinalidade.AsString           := dmDB.TOperacaoExtrafinalidade.AsString;
+      dmDB.TOperacaoSafraidusuario.AsString            := dmDB.vIdUser;
+      dmDB.TOperacaoSafrastatus.AsInteger              := 3;
+      dmDB.TOperacaoSafraidOpMaster.AsString           := vIdPul;
+      dmDB.TOperacaoSafra.ApplyUpdates(-1);
+      dmDB.TDetTalhoesPul.Next;
+    end;
+     //quebra operacao puverização maquinas
+     dmDB.qryOperacaoQuebrada.Close;
+     dmDB.qryOperacaoQuebrada.Open;
+     dmDB.qryOperacaoQuebrada.Filtered := false;
+     dmDB.qryOperacaoQuebrada.Filter   := 'idOpMaster='+vidOp;
+     dmDB.qryOperacaoQuebrada.Filtered := true;
+     dmDB.qryOperacaoQuebrada.First;
+     while not dmDB.qryOperacaoQuebrada.Eof do
+     begin
+       dmDB.qryQuebraMaquinasPul.Close;
+       dmDB.qryQuebraMaquinasPul.Open;
+       dmDB.qryQuebraMaquinasPul.Filtered := false;
+       dmDB.qryQuebraMaquinasPul.Filter   := 'idOperacaoTalhao='+vIdPul+' and idTalhao='+dmDB.qryOperacaoQuebradaidtalhao.AsString;
+       dmDB.qryQuebraMaquinasPul.Filtered := true;
+       while not dmDB.qryQuebraMaquinasPul.eof do
+       begin
+         dmdb.TOperacaoSafraMaquinas.Close;
+         dmdb.TOperacaoSafraMaquinas.Open;
+         dmdb.TOperacaoSafraMaquinas.Insert;
+         dmdb.TOperacaoSafraMaquinasidoperacaotalhao.AsString  := dmDB.qryOperacaoQuebradaid.AsString;
+         dmdb.TOperacaoSafraMaquinasidmaquina.AsString         := dmDB.qryQuebraMaquinasPulidmaquina.AsString;
+         dmdb.TOperacaoSafraMaquinasoperador.AsString          := dmDB.qryQuebraMaquinasPuloperador.AsString;
+         dmdb.TOperacaoSafraMaquinashorainicio.AsString        := StringReplace(dmDB.qryQuebraMaquinasPulhorainicio.AsString,'.',',',[rfReplaceAll]);;
+         dmdb.TOperacaoSafraMaquinashorafim.AsString           := StringReplace(dmDB.qryQuebraMaquinasPulhorafim.AsString,'.',',',[rfReplaceAll]);;
+         dmdb.TOperacaoSafraMaquinashoraparada.AsString        := StringReplace(dmDB.qryQuebraMaquinasPulhoraparada.AsString,'.',',',[rfReplaceAll]);
+         dmdb.TOperacaoSafraMaquinashoraTrabalhada.AsString    := StringReplace(dmDB.qryQuebraMaquinasPulHorasTalhaoPercent.AsString,'.',',',[rfReplaceAll]);;
+         dmdb.TOperacaoSafraMaquinasdata.AsDateTime            := dmDB.qryQuebraMaquinasPuldata.AsDateTime;
+         dmdb.TOperacaoSafraMaquinasobservacao.AsString        := dmDB.qryQuebraMaquinasPulobservacao.AsString;
+         dmdb.TOperacaoSafraMaquinasidOperador.AsString        := dmDB.qryQuebraMaquinasPulidOperador.AsString;
+
+         dmdb.TOperacaoSafraMaquinasidUsuario.AsString         := dmDB.vIdUser;
+         dmdb.TOperacaoSafraMaquinas.ApplyUpdates(-1);
+         dmDB.qryQuebraMaquinasPul.Next;
+       end;
+       dmDB.qryOperacaoQuebrada.Next;
+     end;
 end;
 
 procedure TfrmOperacao.FormKeyUp(Sender: TObject; var Key: Word;
@@ -3238,10 +3274,17 @@ begin
   lblDetVariedade.Text :=  TAppearanceListViewItem(listaOperacao.Selected).Objects.FindObjectT<TListItemText>
    ('Text18').Text;
 
+  if vIdOPTipo='2' then
+   dmDB.vPulverizacao:=1
+  else
+   dmDB.vPulverizacao:=0;
+
   btnProdutos.Visible   := vIdOPTipo<>'5';
   btnOcorrencia.Visible := vIdOPTipo<>'5';
-  btnTalhoes.Visible    := vIdOPTipo<>'5';
   btnVazao.Visible      := vIdOPTipo<>'5';
+  vIdReceituarioSel :=
+   TAppearanceListViewItem(listaOperacao.Selected).Objects.FindObjectT<TListItemImage>
+  ('Image13').TagString;
 
   if vIdOPTipo='2' then
   begin
@@ -3249,10 +3292,6 @@ begin
     begin
      if TListItemImage(ItemObject).Name='Image13' then
      begin
-       vIdReceituarioSel :=
-       TAppearanceListViewItem(listaOperacao.Selected).Objects.FindObjectT<TListItemImage>
-        ('Image13').TagString;
-
        GerarListaDetReceituario(vIdReceituarioSel);
        AbreDetalhesOp(vIdOp);
        MudarAba(tbiReceituario,sender);

@@ -1,13 +1,14 @@
 object dmSync: TdmSync
   OldCreateOrder = False
-  Height = 518
+  Height = 619
   Width = 864
   object qryOpSafraSync: TFDQuery
+    CachedUpdates = True
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select * from operacaosafratalhao '
-      'where status in(2,3) '
-      'and flagsync=0 and idTalhao<>'#39#39
+      'where status=3 '
+      'and flagsync=0 and idTalhao>0'
       
         'and id in(select idoperacaotalhao from detoperacaosafratalhaomaq' +
         'uinasoperadores)'
@@ -308,6 +309,7 @@ object dmSync: TdmSync
     Top = 32
   end
   object qryOpSafraPulverizacao: TFDQuery
+    CachedUpdates = True
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select * from operacaosafratalhao b'
@@ -809,14 +811,6 @@ object dmSync: TdmSync
     Left = 344
     Top = 272
   end
-  object TSyncDetReceituarioTalhao: TFDQuery
-    Connection = dmDB.FDConn
-    SQL.Strings = (
-      'select * from  detreceiturarioTalhao'
-      'where status=1 and syncaws=0')
-    Left = 505
-    Top = 56
-  end
   object TSyncVazaoOperacao: TFDQuery
     CachedUpdates = True
     Connection = dmDB.FDConn
@@ -907,6 +901,7 @@ object dmSync: TdmSync
     end
   end
   object TSyncStandPlantas: TFDQuery
+    CachedUpdates = True
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select * from StandSementes'
@@ -970,6 +965,7 @@ object dmSync: TdmSync
     end
   end
   object TSyncAtualizaReceituario: TFDQuery
+    CachedUpdates = True
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select id,status from receiturario'
@@ -1338,6 +1334,42 @@ object dmSync: TdmSync
     object TSyncAbastecimentoidatividade: TIntegerField
       FieldName = 'idatividade'
       Origin = 'idatividade'
+    end
+    object TSyncAbastecimentoobs: TStringField
+      FieldName = 'obs'
+      Origin = 'obs'
+      Size = 100
+    end
+    object TSyncAbastecimentoimg: TWideMemoField
+      FieldName = 'img'
+      Origin = 'img'
+      BlobType = ftWideMemo
+    end
+    object TSyncAbastecimentoimg2: TWideMemoField
+      FieldName = 'img2'
+      Origin = 'img2'
+      BlobType = ftWideMemo
+    end
+    object TSyncAbastecimentoimg3: TWideMemoField
+      FieldName = 'img3'
+      Origin = 'img3'
+      BlobType = ftWideMemo
+    end
+    object TSyncAbastecimentoimg4: TWideMemoField
+      FieldName = 'img4'
+      Origin = 'img4'
+      BlobType = ftWideMemo
+    end
+    object TSyncAbastecimentoimg5: TWideMemoField
+      FieldName = 'img5'
+      Origin = 'img5'
+      BlobType = ftWideMemo
+    end
+    object TSyncAbastecimentoexterno: TWideStringField
+      FieldName = 'externo'
+      Origin = 'externo'
+      Required = True
+      Size = 32767
     end
   end
   object TSyncAbastecimentoOutros: TFDQuery
@@ -1795,6 +1827,7 @@ object dmSync: TdmSync
     end
   end
   object Comprador: TFDQuery
+    CachedUpdates = True
     OnReconcileError = CompradorReconcileError
     Connection = dmDB.FDConn
     SQL.Strings = (
@@ -1893,6 +1926,7 @@ object dmSync: TdmSync
     end
   end
   object Contratos: TFDQuery
+    CachedUpdates = True
     OnReconcileError = ContratosReconcileError
     Connection = dmDB.FDConn
     SQL.Strings = (
@@ -1983,6 +2017,7 @@ object dmSync: TdmSync
     end
   end
   object Embarque: TFDQuery
+    CachedUpdates = True
     OnReconcileError = EmbarqueReconcileError
     Connection = dmDB.FDConn
     SQL.Strings = (
@@ -2528,6 +2563,394 @@ object dmSync: TdmSync
     end
     object TPlanoRevisaoItensiditem: TWideStringField
       FieldName = 'iditem'
+      Size = 32767
+    end
+  end
+  object TPostAuxItemRevisao: TFDQuery
+    CachedUpdates = True
+    Connection = dmDB.FDConn
+    SQL.Strings = (
+      'select * from auxrevisaoitens'
+      'where syncfaz=0')
+    Left = 392
+    Top = 512
+    object TPostAuxItemRevisaoid: TIntegerField
+      FieldName = 'id'
+      Required = True
+    end
+    object TPostAuxItemRevisaostatus: TWideStringField
+      FieldName = 'status'
+      Required = True
+      Size = 32767
+    end
+    object TPostAuxItemRevisaodatareg: TWideStringField
+      FieldName = 'datareg'
+      Required = True
+      Size = 32767
+    end
+    object TPostAuxItemRevisaoidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Required = True
+      Size = 32767
+    end
+    object TPostAuxItemRevisaodataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Size = 32767
+    end
+    object TPostAuxItemRevisaoidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object TPostAuxItemRevisaonome: TStringField
+      FieldName = 'nome'
+      Size = 100
+    end
+    object TPostAuxItemRevisaogrupo: TStringField
+      FieldName = 'grupo'
+      Size = 100
+    end
+    object TPostAuxItemRevisaosyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Required = True
+      Size = 32767
+    end
+    object TPostAuxItemRevisaosyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Required = True
+      Size = 32767
+    end
+  end
+  object TPostRevisaoItem: TFDQuery
+    CachedUpdates = True
+    Connection = dmDB.FDConn
+    SQL.Strings = (
+      'select * from revisaomaquinaitens '
+      'where syncfaz=0')
+    Left = 568
+    Top = 512
+    object TPostRevisaoItemid: TFDAutoIncField
+      FieldName = 'id'
+      Origin = 'id'
+      ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
+    end
+    object TPostRevisaoItemstatus: TWideStringField
+      FieldName = 'status'
+      Origin = 'status'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoItemdatareg: TWideStringField
+      FieldName = 'datareg'
+      Origin = 'datareg'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoItemidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Origin = 'idusuario'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoItemdataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Origin = 'dataalteracao'
+      Size = 32767
+    end
+    object TPostRevisaoItemidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Origin = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object TPostRevisaoItemidrevisao: TWideStringField
+      FieldName = 'idrevisao'
+      Origin = 'idrevisao'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoItemsyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Origin = 'syncaws'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoItemsyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Origin = 'syncfaz'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoItemidproduto: TWideStringField
+      FieldName = 'idproduto'
+      Origin = 'idproduto'
+      Size = 32767
+    end
+    object TPostRevisaoItemqtde: TBCDField
+      FieldName = 'qtde'
+      Origin = 'qtde'
+      Precision = 10
+      Size = 3
+    end
+    object TPostRevisaoItemitem: TStringField
+      FieldName = 'item'
+      Origin = 'item'
+      Size = 100
+    end
+    object TPostRevisaoItemtipo: TWideStringField
+      FieldName = 'tipo'
+      Origin = 'tipo'
+      Size = 32767
+    end
+    object TPostRevisaoItemobservacao: TStringField
+      FieldName = 'observacao'
+      Origin = 'observacao'
+      Size = 100
+    end
+    object TPostRevisaoItemiditem: TWideStringField
+      FieldName = 'iditem'
+      Origin = 'iditem'
+      Required = True
+      Size = 32767
+    end
+  end
+  object TPostRevisao: TFDQuery
+    CachedUpdates = True
+    Connection = dmDB.FDConn
+    SQL.Strings = (
+      'select * from revisaomaquina r '
+      'where syncfaz=0 '
+      'and status=3')
+    Left = 488
+    Top = 512
+    object TPostRevisaoid: TIntegerField
+      FieldName = 'id'
+      Required = True
+    end
+    object TPostRevisaostatus: TWideStringField
+      FieldName = 'status'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaodatareg: TWideStringField
+      FieldName = 'datareg'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaodataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Size = 32767
+    end
+    object TPostRevisaoidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object TPostRevisaoidplanorevisao: TWideStringField
+      FieldName = 'idplanorevisao'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoidmaquina: TWideStringField
+      FieldName = 'idmaquina'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoobservacao: TStringField
+      FieldName = 'observacao'
+      Size = 100
+    end
+    object TPostRevisaodatainicio: TDateField
+      FieldName = 'datainicio'
+      Required = True
+    end
+    object TPostRevisaodatafim: TDateField
+      FieldName = 'datafim'
+    end
+    object TPostRevisaosyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaosyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoidresponsavel: TWideStringField
+      FieldName = 'idresponsavel'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaohorimetro: TBCDField
+      FieldName = 'horimetro'
+      Precision = 15
+      Size = 2
+    end
+    object TPostRevisaotipo: TWideStringField
+      FieldName = 'tipo'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaohorimetroproxima: TBCDField
+      FieldName = 'horimetroproxima'
+      Precision = 15
+      Size = 3
+    end
+  end
+  object TPostRevisaoServico: TFDQuery
+    CachedUpdates = True
+    Connection = dmDB.FDConn
+    SQL.Strings = (
+      'SELECT * FROM servicomanutencao'
+      'where syncfaz=0')
+    Left = 672
+    Top = 512
+    object TPostRevisaoServicoid: TIntegerField
+      FieldName = 'id'
+      Origin = 'id'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object TPostRevisaoServicostatus: TWideStringField
+      FieldName = 'status'
+      Origin = 'status'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoServicodatareg: TWideStringField
+      FieldName = 'datareg'
+      Origin = 'datareg'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoServicoidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Origin = 'idusuario'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoServicodataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Origin = 'dataalteracao'
+      Size = 32767
+    end
+    object TPostRevisaoServicoidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Origin = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object TPostRevisaoServicotiposervico: TWideStringField
+      FieldName = 'tiposervico'
+      Origin = 'tiposervico'
+      Size = 32767
+    end
+    object TPostRevisaoServicoidrevisao: TWideStringField
+      FieldName = 'idrevisao'
+      Origin = 'idrevisao'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoServicodescricao: TStringField
+      FieldName = 'descricao'
+      Origin = 'descricao'
+      Size = 100
+    end
+    object TPostRevisaoServicoresponsavel: TStringField
+      FieldName = 'responsavel'
+      Origin = 'responsavel'
+      Size = 100
+    end
+    object TPostRevisaoServicovalortotal: TBCDField
+      FieldName = 'valortotal'
+      Origin = 'valortotal'
+      Precision = 15
+      Size = 3
+    end
+    object TPostRevisaoServicosyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Origin = 'syncaws'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoServicosyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Origin = 'syncfaz'
+      Required = True
+      Size = 32767
+    end
+    object TPostRevisaoServicodatarealizado: TDateField
+      FieldName = 'datarealizado'
+      Origin = 'datarealizado'
+    end
+  end
+  object TSyncDetReceituarioTalhao: TFDQuery
+    Connection = dmDB.FDConn
+    SQL.Strings = (
+      'select * from  detreceiturarioTalhao'
+      'where status=1 and syncaws=0')
+    Left = 505
+    Top = 64
+    object TSyncDetReceituarioTalhaoid: TIntegerField
+      FieldName = 'id'
+      Origin = 'id'
+      Required = True
+    end
+    object TSyncDetReceituarioTalhaostatus: TWideStringField
+      FieldName = 'status'
+      Origin = 'status'
+      Required = True
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaodatareg: TWideStringField
+      FieldName = 'datareg'
+      Origin = 'datareg'
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaoidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Origin = 'idusuario'
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaodataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Origin = 'dataalteracao'
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaoidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Origin = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaoidtalhao: TWideStringField
+      FieldName = 'idtalhao'
+      Origin = 'idtalhao'
+      Required = True
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaoareahe: TBCDField
+      FieldName = 'areahe'
+      Origin = 'areahe'
+      Precision = 15
+      Size = 2
+    end
+    object TSyncDetReceituarioTalhaosyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Origin = 'syncaws'
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaosyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Origin = 'syncfaz'
+      Size = 32767
+    end
+    object TSyncDetReceituarioTalhaoidreceiturario: TWideStringField
+      FieldName = 'idreceiturario'
+      Origin = 'idreceiturario'
+      Required = True
       Size = 32767
     end
   end

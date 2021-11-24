@@ -164,12 +164,6 @@ type
     TTipoAplicacaoSolidostatus: TWideStringField;
     TTipoAplicacaoSolidonome: TStringField;
     TDetTalhoesPul: TFDQuery;
-    TDetTalhoesPulid: TFDAutoIncField;
-    TDetTalhoesPulidTalhao: TIntegerField;
-    TDetTalhoesPulidOperacao: TIntegerField;
-    TDetTalhoesPulAreaPrevista: TBCDField;
-    TDetTalhoesPulTalhao: TStringField;
-    TDetTalhoesPulAreaRealizada: TBCDField;
     qryAux: TFDQuery;
     TOperacaoSafratipoaplicacaosolido: TStringField;
     TOperacaoSafraCultura: TStringField;
@@ -694,17 +688,92 @@ type
     TMaquinahorimetroultimarev: TBCDField;
     TMaquinahorimetroproximarevisao: TBCDField;
     TListaRevisao: TFDQuery;
+    TMaquinahorimetro: TBCDField;
+    TProdutoscodigofabricante: TStringField;
+    TProdutosdefencivo: TIntegerField;
+    TOperacaoExtra: TFDQuery;
+    TOperacaoExtraid: TIntegerField;
+    TOperacaoExtrastatus: TWideStringField;
+    TOperacaoExtradatareg: TWideStringField;
+    TOperacaoExtraidusuario: TWideStringField;
+    TOperacaoExtradataalteracao: TWideStringField;
+    TOperacaoExtraidusuarioalteracao: TWideStringField;
+    TOperacaoExtraidsafra: TWideStringField;
+    TOperacaoExtraidoperacao: TWideStringField;
+    TOperacaoExtradatainicio: TDateField;
+    TOperacaoExtradatafim: TDateField;
+    TOperacaoExtraobservacao: TStringField;
+    TOperacaoExtraidtalhao: TWideStringField;
+    TOperacaoExtraidresponsavel: TWideStringField;
+    TOperacaoExtraareaprevista: TBCDField;
+    TOperacaoExtraarearealizada: TBCDField;
+    TOperacaoExtraFlagSync: TIntegerField;
+    TOperacaoExtradataSync: TDateTimeField;
+    TOperacaoExtrafinalidade: TStringField;
+    TOperacaoExtraidtipoaplicacaosolido: TStringField;
+    TOperacaoExtraidcultura: TIntegerField;
+    TOperacaoExtraidvariedade: TIntegerField;
+    TOperacaoExtraidreceituario: TIntegerField;
+    TOperacaoExtratipoterraaereo: TStringField;
+    TOperacaoExtraidOpMaster: TIntegerField;
+    TOperacaoExtraidcobertura: TIntegerField;
+    TOperacaoExtraQualidadeCobertura: TStringField;
+    TUsuariomanutencaomaquinas: TWideStringField;
+    TUsuarioarmazem: TWideStringField;
+    TUsuarioaplicacaosolido: TWideStringField;
+    TUsuariopulverizacao: TWideStringField;
+    TUsuarioplantio: TWideStringField;
+    TUsuariocolheita: TWideStringField;
+    TUsuariomonitoramentopragas: TWideStringField;
+    TUsuariopluviometria: TWideStringField;
+    TUsuarioabastecimentoexterno: TIntegerField;
     TListaRevisaoid: TIntegerField;
-    TListaRevisaoidplanorevisao: TWideStringField;
     TListaRevisaoidmaquina: TWideStringField;
+    TListaRevisaoobservacao: TStringField;
     TListaRevisaodatainicio: TDateField;
     TListaRevisaodatafim: TDateField;
     TListaRevisaohorimetro: TBCDField;
     TListaRevisaohorimetroproxima: TBCDField;
+    TListaRevisaoidplanorevisao: TIntegerField;
     TListaRevisaonome: TStringField;
-    TMaquinahorimetro: TBCDField;
-    TProdutoscodigofabricante: TStringField;
-    TProdutosdefensivo: TIntegerField;
+    qryConfigTIPODB: TStringField;
+    TAbastecimentoimg: TWideMemoField;
+    TAbastecimentoimg2: TWideMemoField;
+    TAbastecimentoimg3: TWideMemoField;
+    TAbastecimentoimg4: TWideMemoField;
+    TAbastecimentoimg5: TWideMemoField;
+    TAbastecimentoexterno: TWideStringField;
+    QryFotos: TFDQuery;
+    QryFotosid: TIntegerField;
+    QryFotosstatus: TWideStringField;
+    QryFotosdatareg: TWideStringField;
+    QryFotosidusuario: TWideStringField;
+    QryFotosdataalteracao: TWideStringField;
+    QryFotosidusuarioalteracao: TWideStringField;
+    QryFotosidlocalestoque: TWideStringField;
+    QryFotosidmaquina: TWideStringField;
+    QryFotosidoperador: TWideStringField;
+    QryFotosvolumelt: TBCDField;
+    QryFotoscombustivel: TIntegerField;
+    QryFotosdataabastecimento: TDateField;
+    QryFotoshora: TTimeField;
+    QryFotossyncaws: TWideStringField;
+    QryFotossyncfaz: TWideStringField;
+    QryFotoshorimetro: TBCDField;
+    QryFotosidatividade: TIntegerField;
+    QryFotosobs: TStringField;
+    QryFotosimg: TWideMemoField;
+    QryFotosimg2: TWideMemoField;
+    QryFotosimg3: TWideMemoField;
+    QryFotosimg4: TWideMemoField;
+    QryFotosimg5: TWideMemoField;
+    QryFotosexterno: TWideStringField;
+    TDetTalhoesPulid: TFDAutoIncField;
+    TDetTalhoesPulidTalhao: TIntegerField;
+    TDetTalhoesPulidOperacao: TIntegerField;
+    TDetTalhoesPulAreaPrevista: TBCDField;
+    TDetTalhoesPulAreaRealizada: TBCDField;
+    TDetTalhoesPulTalhao: TStringField;
     procedure FDConnBeforeConnect(Sender: TObject);
     procedure TUsuarioReconcileError(DataSet: TFDDataSet; E: EFDException;
       UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
@@ -746,6 +815,7 @@ type
     { Private declarations }
   public
     //SELECAO EM FORMULARIO
+    vImg64Horimetro,vImg64Bomba,
     vIdTalhao,vNomeTalhao,vAreaTalhao,vIdProduto,vNomeProduto,
     vIdOperador,vNomeOperador,vIdMaquinaSel,vMarcaModelo,vIdTipoOcorrencia,
     vNomeTipoOocrrencia,vIdReceituario,vNomeReceituario,vStatusRec,
@@ -755,7 +825,9 @@ type
     vIdRevSelect,vNomeItemRevSelect,vIdItem,vIdRevisaoIdItem,vIdItemRevSelect,
     vCodFabricanteProduto:string;
     //
-    vIdUser,vIdSegmento,vAgronomo,vAbastecimento:string;
+    vIdUser,vIdSegmento,vAgronomo:string;
+
+    vArmazem,vAbastecimento,vPluviometria,vPulverizacao,vRevisaoMaquinas:integer;
     function  LimpaResut(vResult: string): String;
     function  VerificaTabelaVazia(AnomeTable: string): Boolean;
     function  VerificaTalhaoExiste(idTalhao,idReceituario:string): Boolean;
@@ -766,6 +838,7 @@ type
     procedure SalvarAcesso(vUsuario,Senha:string);
     procedure AbrePluviometro(VFiltro:string);
     procedure AbreQryOperacao(vIdOperacao: string);
+    procedure AbreOperacaoExta(vIdOperacao: string);
     procedure AbreMaquinaOperacao(vIdOperacao: string);
     procedure AbreProdutoOperacao(vIdOperacao: string);
     procedure AbreVazaoOperacao(vIdOperacao: string);
@@ -804,7 +877,7 @@ type
     procedure DeleteReceituario(id: string);
     procedure DeleteReceituarios;
     function  RetornaAreaTotalDetReceituario(id: string):string;
-    procedure DeleteOperacao(id: string);
+    procedure DeleteOperacao(id,vIdRec: string);
     procedure HabilitaSync(id: string);
     procedure HabilitaSyncContrato(id: string);
 
@@ -847,11 +920,15 @@ type
     procedure AbreContratos(vFiltro:string);
     procedure GeraListaMaquina(vIdMaquina:string);
     function  RetornaHorimetroProximaRev(idMaquina:string):string;
+    function  RetornaHorimetroAtual(idMaquina:string):string;
     procedure AlteraStatusOperacao(vid:string);
     function  VerificaIdServicoRevisaoExiste(vId:string):Boolean;
     function  VerificaRevisaoExiste(vId:string):Boolean;
     function  VerificaIdItemRevisaoExiste(vId:string):Boolean;
     function  RevisaoQtdeItensConfirmados(vIdRev:string):integer;
+    procedure AbreProdutos(vFiltro:string);
+    procedure AbreFotos(vID:string);
+    procedure AbreMaquinas(vFiltro:string);
   end;
 
 var
@@ -1116,14 +1193,28 @@ begin
   end;
 end;
 
+function TdmDB.RetornaHorimetroAtual(idMaquina: string): string;
+begin
+ with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('select horimetro from maquinaveiculo');
+   Add('where id='+idMaquina);
+   Open;
+   Result := FieldByName('horimetro').AsString;
+ end;
+end;
+
 function TdmDB.RetornaHorimetroProximaRev(idMaquina: string): string;
 begin
  with qryAux,qryAux.SQL do
  begin
    Clear;
-   Add('select * from revisaomaquina');
-   Add('where idmaquina='+idMaquina);
-   Add('order by datafim desc limit 1');
+   Add('select a.horimetroproxima from revisaomaquinahist a');
+   Add('join maquinaveiculo b on a.idmaquina=b.id');
+   Add('where idMaquina='+idMaquina+' and a.horimetroproxima>b.horimetro');
+   Add('order by a.horimetroproxima');
+   Add('limit 1');
    Open;
    Result := FieldByName('horimetroproxima').AsString;
  end;
@@ -1526,6 +1617,19 @@ begin
  end;
 end;
 
+procedure TdmDB.AbreFotos(vID: string);
+begin
+ with QryFotos,QryFotos.SQL do
+ begin
+   Clear;
+   Add('select * from abastecimento a');
+   Add('where id='+vID);
+   Open;
+   vImg64Horimetro := QryFotosimg.AsString;
+   vImg64Bomba     := QryFotosimg2.AsString;
+ end;
+end;
+
 procedure TdmDB.AbreTalhoesPluviometros(vIdPLu: string);
 begin
  with TPluviometroTalhoes,TPluviometroTalhoes.SQL do
@@ -1577,6 +1681,18 @@ begin
  end;
 end;
 
+procedure TdmDB.AbreMaquinas(vFiltro: string);
+begin
+ with TMaquina,TMaquina.SQL do
+ begin
+   Clear;
+   Add('select * from maquinaveiculo');
+   Add('where 1=1');
+   Add(vFiltro);
+   Open;
+ end;
+end;
+
 procedure TdmDB.AbreOcorrenciaOperacao(vIdOperacao: string);
 begin
  with TOperacaoSafraOcorrencia,TOperacaoSafraOcorrencia.SQL do
@@ -1586,6 +1702,17 @@ begin
    Add('join auxtipoocorrencia b on a.idtipoocorrencia=b.id');
    Add('where a.status=1 and idoperacaotalhao='+vIdOperacao);
    Add('Order by a.id desc');
+   Open;
+ end;
+end;
+
+procedure TdmDB.AbreOperacaoExta(vIdOperacao: string);
+begin
+ with TOperacaoExtra,TOperacaoExtra.SQL do
+ begin
+   Clear;
+   Add('select * from operacaosafratalhao');
+   Add('where id='+vIdOperacao);
    Open;
  end;
 end;
@@ -1644,6 +1771,19 @@ begin
    Add('Order by a.id desc');
    Open;
    TOperacaoSafraProdutos.First;
+ end;
+end;
+
+procedure TdmDB.AbreProdutos(vFiltro: string);
+begin
+ with TProdutos,TProdutos.SQL do
+ begin
+   Clear;
+   Add('select * from produtos');
+   Add('where status=1');
+   Add(vFiltro);
+   Add('order by nome');
+   Open;
  end;
 end;
 
@@ -1935,9 +2075,40 @@ begin
   Open;
   if not qryAux.IsEmpty then
    begin
-    vIdUser        := qryAux.FieldByName('id').AsString;
-    vAgronomo      := qryAux.FieldByName('agronomo').AsString;
-    vAbastecimento := qryAux.FieldByName('abastecimento').AsString;
+    vIdUser          := qryAux.FieldByName('id').AsString;
+    vAgronomo        := qryAux.FieldByName('agronomo').AsString;
+    vAbastecimento   := qryAux.FieldByName('abastecimento').AsInteger;
+    vRevisaoMaquinas := qryAux.FieldByName('manutencaomaquinas').AsInteger;
+    vPulverizacao     := qryAux.FieldByName('pulverizacao').AsInteger;
+    if frmPrincipal.vTipoDb='AGRICULTURA' then
+    begin
+      //MAQUINAS E ABASTECIMENTO
+      frmPrincipal.TreeMaquinas.Visible :=
+       (qryAux.FieldByName('manutencaomaquinas').AsInteger=1) or
+        (qryAux.FieldByName('abastecimento').AsInteger=1);
+      //so manutencao
+      frmPrincipal.TreeManutencao.Visible :=
+       (qryAux.FieldByName('manutencaomaquinas').AsInteger=1);
+      //So abastecimento
+      frmPrincipal.TreeAbastecimento.Visible :=
+       (qryAux.FieldByName('abastecimento').AsInteger=1);
+      //monitoramento
+      frmPrincipal.TreeMonitoramento.Visible :=
+       (qryAux.FieldByName('monitoramentopragas').AsInteger=1);
+      //pluviometria
+      frmPrincipal.Treepluviometria.Visible :=
+       (qryAux.FieldByName('pluviometria').AsInteger=1);
+      //pulverizacao
+      frmPrincipal.TreeReceituario.Visible :=
+       (qryAux.FieldByName('pulverizacao').AsInteger=1);
+      //Armazem
+      frmPrincipal.TreeArmazem.Visible    :=
+       (qryAux.FieldByName('Armazem').AsInteger=1);
+
+      vArmazem       := qryAux.FieldByName('Armazem').AsInteger;
+      vAbastecimento := qryAux.FieldByName('abastecimento').AsInteger;
+      vPluviometria  := qryAux.FieldByName('pluviometria').AsInteger;
+    end;
     SalvarAcesso(Usuario,Senha);
     Result := true
    end
@@ -1950,10 +2121,13 @@ end;
 procedure TdmDB.CriaDetPuverisacaoReceituario(idReceituario,
   idOperacao: string);
 var
- qryAux : TFDQuery;
+ qryAux,qryAuxInsert : TFDQuery;
 begin
  qryAux := TFDQuery.Create(nil);
  qryAux.Connection := FDConn;
+
+ qryAuxInsert := TFDQuery.Create(nil);
+ qryAuxInsert.Connection := FDConn;
  with qryAux,qryAux.sql do
  begin
    Clear;
@@ -1962,15 +2136,16 @@ begin
    Open;
    while not qryAux.eof do
    begin
-      TDetTalhoesPul.Close;
-      TDetTalhoesPul.Open;
-      TDetTalhoesPul.Insert;
-      TDetTalhoesPulidTalhao.AsString      := qryAux.FieldByName('idtalhao').AsString;
-      TDetTalhoesPulidOperacao.AsString    := idOperacao;
-      TDetTalhoesPulAreaPrevista.AsString  := qryAux.FieldByName('areahe').AsString;
-      TDetTalhoesPulAreaRealizada.AsString := qryAux.FieldByName('areahe').AsString;
-      TDetTalhoesPulAreaRealizada.AsString := qryAux.FieldByName('areahe').AsString;
-      TDetTalhoesPul.ApplyUpdates(-1);
+     with qryAuxInsert,qryAuxInsert.SQL do
+     begin
+      Clear;
+      Add('insert into DetTalhoesPulverizacao');
+      Add('(idTalhao,idOperacao,AreaPrevista,AreaRealizada)values(');
+      Add(qryAux.FieldByName('idtalhao').AsString+',');
+      Add(idOperacao+',');
+      Add(StringReplace(qryAux.FieldByName('areahe').AsString,',','.',[rfReplaceAll])+',');
+      Add(StringReplace(qryAux.FieldByName('areahe').AsString,',','.',[rfReplaceAll])+')');
+      qryAuxInsert.ExecSQL;
       qryAux.Next;
    end;
  end;
@@ -1997,6 +2172,7 @@ begin
    end;
  end;
  qryAux.Free;
+ end;
 end;
 
 procedure TdmDB.DeletaPluviometria(vIdPluviometria:string);
@@ -2131,7 +2307,7 @@ begin
  qryAux.free;
 end;
 
-procedure TdmDB.DeleteOperacao(id: string);
+procedure TdmDB.DeleteOperacao(id,vIdRec: string);
 var
  qryAux : TFDQuery;
 begin
@@ -2158,12 +2334,13 @@ begin
    Add('delete from detoperacaosafratalhaoprodutos');
    Add('where idoperacaotalhao='+id);
    ExecSQL;
-
-   Clear;
-   Add('update receiturario set status=1');
-   Add('where id in(select idreceituario from operacaosafratalhao');
-   Add('where id='+id+')');
-   ExecSQL;
+   if vIdRec.Length>0 then
+   begin
+    Clear;
+    Add('update receiturario set status=1');
+    Add('where id='+vIdRec);
+    ExecSQL;
+   end;
 
  end;
  qryAux.free;
@@ -2266,12 +2443,12 @@ begin
 {$IF DEFINED(iOS) or DEFINED(ANDROID)}
   FDConn.Params.DriverID :='SQLite';
   FDConn.Params.Values['Database'] :=
-  TPath.Combine(TPath.GetDocumentsPath,'AppFortAgr.db');
+  TPath.Combine(TPath.GetDocumentsPath,'Fort.db');
 {$ENDIF}
 {$IF DEFINED(WIN32)}
   FDConn.Params.DriverID :='SQLite';
   FDConn.Params.Values['Database'] :=
-  'F:\Projetos\Clientes\FortalezaGuapore\FortAgro\FortAgroAndroid\db\AppFortW.db';
+  'D:\Projetos2021\FortAgroMobile\FortAgroAndroid\db\AppFortAgrW.db';
 {$ENDIF}
 end;
 
@@ -2280,9 +2457,10 @@ begin
  with TListaRevisao,TListaRevisao.sql do
  begin
    Clear;
-   Add('select a.*,b.nome  from revisaomaquina a');
+   Add('select a.*,b.nome  from revisaomaquinahist a');
    Add('left join planorevisao b on a.idplanorevisao=b.id');
    Add('where a.idmaquina='+vIdMaquina);
+   Add('and a.horimetroproxima');
    Open;
  end;
 end;

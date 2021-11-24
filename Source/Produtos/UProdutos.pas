@@ -33,6 +33,7 @@ type
     ListaProdutos: TListView;
     edtCodFabricante: TEdit;
     Label2: TLabel;
+    Button1: TButton;
     procedure StringGrid1CellDblClick(const Column: TColumn;
       const Row: Integer);
     procedure FormShow(Sender: TObject);
@@ -45,9 +46,13 @@ type
     procedure btnFecharClick(Sender: TObject);
     procedure edtNomeFiltroKeyUp(Sender: TObject; var Key: Word;
       var KeyChar: Char; Shift: TShiftState);
+    procedure edtCodFabricanteKeyUp(Sender: TObject; var Key: Word;
+      var KeyChar: Char; Shift: TShiftState);
+    procedure Button1Click(Sender: TObject);
   private
     procedure myShowMenssagem(msg: string);
     procedure GeraLista;
+    procedure Filtro;
   public
     vIdProduto,vNomeProduto,vTipo,vCodProduto:string;
     { Public declarations }
@@ -83,23 +88,23 @@ begin
  end
 end;
 
+procedure TfrmProdutos.Button1Click(Sender: TObject);
+begin
+ Filtro;
+end;
+
+procedure TfrmProdutos.edtCodFabricanteKeyUp(Sender: TObject; var Key: Word;
+  var KeyChar: Char; Shift: TShiftState);
+begin
+ if key=13 then
+  Filtro;
+end;
+
 procedure TfrmProdutos.edtNomeFiltroKeyUp(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
-var
- vFiltro :string;
 begin
- vFiltro :='tipo ='+vTipo;
  if key=13 then
- begin
-   if edtNomeFiltro.Text.Length>0 then
-     vFiltro := ' AND NOME LIKE '+QuotedStr('%'+edtNomeFiltro.Text+'%');
-   if edtCodFabricante.Text.Length>0 then
-     vFiltro := ' AND codigofabricante LIKE '+QuotedStr('%'+edtCodFabricante.Text+'%');
-   dmDb.TProdutos.Filtered := false;
-   dmDb.TProdutos.Filter   := vFiltro;
-   dmDb.TProdutos.Filtered := true;
-   GeraLista;
- end;
+  Filtro;
 end;
 
 procedure TfrmProdutos.myShowMenssagem(msg: string);
@@ -116,6 +121,24 @@ begin
   end;
 end;
 
+procedure TfrmProdutos.Filtro;
+var
+ vFiltro :string;
+begin
+ if vTipo='1' then
+  vFiltro :=' AND DEFENCIVO=1';
+ if vTipo='2' then
+  vFiltro :=' AND DEFENCIVO=0';
+ if vTipo='3' then
+  vFiltro :=' AND DEFENCIVO=0';
+ if edtNomeFiltro.Text.Length>0 then
+  vFiltro := ' AND NOME LIKE '+QuotedStr('%'+edtNomeFiltro.Text+'%');
+ if edtCodFabricante.Text.Length>0 then
+  vFiltro := ' AND codigofabricante LIKE '+QuotedStr('%'+edtCodFabricante.Text+'%');
+ dmDB.AbreProdutos(vFiltro);
+ GeraLista;
+end;
+
 procedure TfrmProdutos.FormKeyUp(Sender: TObject; var Key: Word;
   var KeyChar: Char; Shift: TShiftState);
 var
@@ -127,29 +150,12 @@ begin
     KeyboardService.HideVirtualKeyboard;
    key := 0;
  end;
+ 
 end;
 
 procedure TfrmProdutos.FormShow(Sender: TObject);
 begin
  frmProdutos.StyleBook := frmPrincipal.StyleBook1;
- BindSourceDB1.DataSet   := nil;
- dmDB.TProdutos.Close;
- dmDB.TProdutos.Open();
-
- if dmDB.TAbastecimentoOutros.State=dsInsert then
- begin
-  dmDB.TProdutos.Filtered := false;
-  dmDB.TProdutos.Filter   := 'defencivo=0';
-  dmDB.TProdutos.Filtered := True;
- end
- else
- begin
-  dmDB.TProdutos.Filtered := false;
-  dmDB.TProdutos.Filter   := 'defencivo=1';
-  dmDB.TProdutos.Filtered := True;
- end;
- BindSourceDB1.DataSet   := dmDB.TProdutos;
- GeraLista;
 end;
 
 procedure TfrmProdutos.GeraLista;

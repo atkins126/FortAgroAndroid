@@ -138,7 +138,6 @@ type
     FDStanStorageJSONLink1: TFDStanStorageJSONLink;
     TSyncDetReceituario: TFDQuery;
     qryAux: TFDQuery;
-    TSyncDetReceituarioTalhao: TFDQuery;
     TSyncVazaoOperacao: TFDQuery;
     TSyncVazaoOperacaoid: TIntegerField;
     TSyncVazaoOperacaostatus: TWideStringField;
@@ -475,6 +474,85 @@ type
     TPlanoRevisaoItensobservacao: TStringField;
     TPlanoRevisaoItensitem: TStringField;
     TPlanoRevisaoItensiditem: TWideStringField;
+    TSyncAbastecimentoobs: TStringField;
+    TPostAuxItemRevisao: TFDQuery;
+    TPostRevisaoItem: TFDQuery;
+    TPostRevisao: TFDQuery;
+    TPostRevisaoServico: TFDQuery;
+    TPostAuxItemRevisaoid: TIntegerField;
+    TPostAuxItemRevisaostatus: TWideStringField;
+    TPostAuxItemRevisaodatareg: TWideStringField;
+    TPostAuxItemRevisaoidusuario: TWideStringField;
+    TPostAuxItemRevisaodataalteracao: TWideStringField;
+    TPostAuxItemRevisaoidusuarioalteracao: TWideStringField;
+    TPostAuxItemRevisaonome: TStringField;
+    TPostAuxItemRevisaogrupo: TStringField;
+    TPostAuxItemRevisaosyncaws: TWideStringField;
+    TPostAuxItemRevisaosyncfaz: TWideStringField;
+    TPostRevisaoid: TIntegerField;
+    TPostRevisaostatus: TWideStringField;
+    TPostRevisaodatareg: TWideStringField;
+    TPostRevisaoidusuario: TWideStringField;
+    TPostRevisaodataalteracao: TWideStringField;
+    TPostRevisaoidusuarioalteracao: TWideStringField;
+    TPostRevisaoidplanorevisao: TWideStringField;
+    TPostRevisaoidmaquina: TWideStringField;
+    TPostRevisaoobservacao: TStringField;
+    TPostRevisaodatainicio: TDateField;
+    TPostRevisaodatafim: TDateField;
+    TPostRevisaosyncaws: TWideStringField;
+    TPostRevisaosyncfaz: TWideStringField;
+    TPostRevisaoidresponsavel: TWideStringField;
+    TPostRevisaohorimetro: TBCDField;
+    TPostRevisaotipo: TWideStringField;
+    TPostRevisaohorimetroproxima: TBCDField;
+    TPostRevisaoItemid: TFDAutoIncField;
+    TPostRevisaoItemstatus: TWideStringField;
+    TPostRevisaoItemdatareg: TWideStringField;
+    TPostRevisaoItemidusuario: TWideStringField;
+    TPostRevisaoItemdataalteracao: TWideStringField;
+    TPostRevisaoItemidusuarioalteracao: TWideStringField;
+    TPostRevisaoItemidrevisao: TWideStringField;
+    TPostRevisaoItemsyncaws: TWideStringField;
+    TPostRevisaoItemsyncfaz: TWideStringField;
+    TPostRevisaoItemidproduto: TWideStringField;
+    TPostRevisaoItemqtde: TBCDField;
+    TPostRevisaoItemitem: TStringField;
+    TPostRevisaoItemtipo: TWideStringField;
+    TPostRevisaoItemobservacao: TStringField;
+    TPostRevisaoItemiditem: TWideStringField;
+    TPostRevisaoServicoid: TIntegerField;
+    TPostRevisaoServicostatus: TWideStringField;
+    TPostRevisaoServicodatareg: TWideStringField;
+    TPostRevisaoServicoidusuario: TWideStringField;
+    TPostRevisaoServicodataalteracao: TWideStringField;
+    TPostRevisaoServicoidusuarioalteracao: TWideStringField;
+    TPostRevisaoServicotiposervico: TWideStringField;
+    TPostRevisaoServicoidrevisao: TWideStringField;
+    TPostRevisaoServicodescricao: TStringField;
+    TPostRevisaoServicoresponsavel: TStringField;
+    TPostRevisaoServicovalortotal: TBCDField;
+    TPostRevisaoServicosyncaws: TWideStringField;
+    TPostRevisaoServicosyncfaz: TWideStringField;
+    TPostRevisaoServicodatarealizado: TDateField;
+    TSyncDetReceituarioTalhao: TFDQuery;
+    TSyncDetReceituarioTalhaoid: TIntegerField;
+    TSyncDetReceituarioTalhaostatus: TWideStringField;
+    TSyncDetReceituarioTalhaodatareg: TWideStringField;
+    TSyncDetReceituarioTalhaoidusuario: TWideStringField;
+    TSyncDetReceituarioTalhaodataalteracao: TWideStringField;
+    TSyncDetReceituarioTalhaoidusuarioalteracao: TWideStringField;
+    TSyncDetReceituarioTalhaoidtalhao: TWideStringField;
+    TSyncDetReceituarioTalhaoareahe: TBCDField;
+    TSyncDetReceituarioTalhaosyncaws: TWideStringField;
+    TSyncDetReceituarioTalhaosyncfaz: TWideStringField;
+    TSyncDetReceituarioTalhaoidreceiturario: TWideStringField;
+    TSyncAbastecimentoimg: TWideMemoField;
+    TSyncAbastecimentoimg2: TWideMemoField;
+    TSyncAbastecimentoimg3: TWideMemoField;
+    TSyncAbastecimentoimg4: TWideMemoField;
+    TSyncAbastecimentoimg5: TWideMemoField;
+    TSyncAbastecimentoexterno: TWideStringField;
     procedure TSyncPragasReconcileError(DataSet: TFDDataSet; E: EFDException;
       UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
     procedure TSyncReceituarioReconcileError(DataSet: TFDDataSet;
@@ -493,7 +571,7 @@ type
     procedure AbreDetVazaoOperacao(vIdOP:string);
     procedure AlterarFlagSyncStand;
     procedure AlterarFlagSyncPluviometria;
-    procedure AlterarFlagAbastecimento;
+    procedure AlterarFlagAbastecimento(id:string);
     procedure AlterarFlagAbastecimentoOutros;
     procedure AlterarFlagMovLocalEstoque;
     procedure AlterarFlagEmbarque(vId:String);
@@ -505,6 +583,10 @@ type
     procedure AbreMonitoramentoPontoValoresSinc(id:string);
     function VerificaReceituarioExiste(id:string):Boolean;
     procedure AtualizaObsReceituario(id,obs:string);
+    procedure AlterarFlagAuxItemRev(vIdOld,vIdNew:string);
+    procedure AlterarFlagRevisao(vIdOld,vIdNew:string);
+    procedure AlterarFlagRevisaoItem(vId: string);
+    procedure AlterarFlagRevisaoServico(vId: string);
   public
     Host,Porta:string;
     function  GetUsuarios: string;
@@ -541,6 +623,10 @@ type
     function  GetPlanoRevisaoMaquinas: string;
     function  GetPlanoRevisaoItens: string;
 
+    function GetPlanoAuxItemRevisao: string;
+    function GetPlanoItemRevisao: string;
+    function GetTipoDB:string;
+
     function PostOperacaoSafraAplSolidos:string;
     function PostOperacaoSafraMaquinasAplSolidos(idOp:string):string;
     function PostOperacaoSafraProdutosAplSolidos(idOp:string):string;
@@ -561,6 +647,10 @@ type
     function PostMovLocalEstoque:string;
 
     function PostEmbarques:string;
+    function PostItemRevisao:string;
+    function PostRevisao:string;
+    function PostRevisaoItens:string;
+    function PostRevisaoServico:string;
 
     function PostMonitoramento:string;
     function PostMonitoramentoPontos(vid:string): string;
@@ -570,16 +660,18 @@ type
     //Compras
     function  PostEnviaEmailOrcamento(idOrcamento:string):string;
     procedure DeletaTabelaSync(Atabela:string);
+    procedure DeletaReceituarioSync;
     procedure DeletaMonitoramento(ID:string);
     procedure DeletaMonitoramentoPonto(vIDPonto,vNomePonto:string);
     procedure DeletaTabelaId(Atabela,Id: string);
     procedure DeletaTabelaPraga(Id: string);
     procedure DeletaDetReceituario(IdRec: string);
     procedure AbreMaquinaSafraTalhao(idOperacao:string);
-
-
-    function GetPlanoAuxItemRevisao: string;
-    function GetPlanoItemRevisao: string;
+    procedure AbreAbastecimentoSync(idAbastecimento:string);
+    procedure AbreAuxItemRevisaoSync(vId:string);
+    procedure AbreRevisaoSync(vId:string);
+    procedure AbreRevisaoItemSync(vId:string);
+    procedure AbreRevisaoServicoSync(vId:string);
   end;
 
 var
@@ -619,30 +711,39 @@ var
  URL,vReultHTTP:STRING;
  JsonToSend  : TStringStream;
  I:integer;
+ vQryLoop :TFDQuery;
 begin
- TThread.Synchronize(nil,procedure
+ vQryLoop := TFDQuery.Create(nil);
+ vQryLoop.Connection := dmDB.FDConn;
+ with vQryLoop,vQryLoop.SQL do
  begin
-  TSyncAbastecimento.Close;
-  TSyncAbastecimento.Open;
- end);
- if not TSyncAbastecimento.IsEmpty then
- begin
-   JsonToSend := TStringStream.Create(nil);
-   TSyncAbastecimento.SaveToStream(JsonToSend,sfJSON);
-   Url := 'http://'+Host+':'+Porta+'/Abastecimento';
-   IdHTTP1.Request.CustomHeaders.Clear;
-   IdHTTP1.Request.CustomHeaders.Clear;
-   IdHTTP1.Request.ContentType := 'application/json';
-   IdHTTP1.Request.Accept      := 'application/json';
-   vReultHTTP := IdHTTP1.Post(url,JsonToSend);
-   if copy(vReultHTTP,0,4)='{"OK'then
+   Clear;
+   Add('select * from abastecimento where syncFaz=0');
+   Open;
+   while not eof do
    begin
-     AlterarFlagAbastecimento;
-     vReultHTTP := StringReplace(vReultHTTP,'{"OK":"','',[rfReplaceAll]);
-     vReultHTTP := StringReplace(vReultHTTP,'"}','',[rfReplaceAll]);
-   end;
+     AbreAbastecimentoSync(vQryLoop.FieldByName('ID').AsString);
+     if not TSyncAbastecimento.IsEmpty then
+     begin
+       JsonToSend := TStringStream.Create(nil);
+       TSyncAbastecimento.SaveToStream(JsonToSend,sfJSON);
+       Url := 'http://'+Host+':'+Porta+'/Abastecimento';
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.ContentType := 'application/json';
+       IdHTTP1.Request.Accept      := 'application/json';
+       vReultHTTP := IdHTTP1.Post(url,JsonToSend);
+       if copy(vReultHTTP,0,4)='{"OK'then
+       begin
+         AlterarFlagAbastecimento(vQryLoop.FieldByName('ID').AsString);
+         vReultHTTP := StringReplace(vReultHTTP,'{"OK":"','',[rfReplaceAll]);
+         vReultHTTP := StringReplace(vReultHTTP,'"}','',[rfReplaceAll]);
+       end;
+     end;
+     Result     := vReultHTTP;
+     vQryLoop.Next;
+   end
  end;
- Result     := vReultHTTP;
 end;
 
 function TdmSync.PostAbastecimentoOutros: string;
@@ -753,6 +854,45 @@ begin
        result:='Erro ao comunicar com Servidor:'+E.Message;
       end;
    end;
+end;
+
+function TdmSync.PostItemRevisao: string;
+var
+ URL,vReultHTTP:STRING;
+ JsonToSend  : TStringStream;
+ I:integer;
+ vQryLoop :TFDQuery;
+begin
+ vQryLoop := TFDQuery.Create(nil);
+ vQryLoop.Connection := dmDB.FDConn;
+ with vQryLoop,vQryLoop.SQL do
+ begin
+   Clear;
+   Add('select * from auxrevisaoitens where syncfaz=0');
+   Open;
+   while not eof do
+   begin
+    AbreAuxItemRevisaoSync(vQryLoop.FieldByName('ID').AsString);
+    if not TPostAuxItemRevisao.IsEmpty then
+    begin
+       JsonToSend := TStringStream.Create(nil);
+       TPostAuxItemRevisao.SaveToStream(JsonToSend,sfJSON);
+       Url := 'http://'+Host+':'+Porta+'/AuxItemRevisao';
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.ContentType := 'application/json';
+       IdHTTP1.Request.Accept      := 'application/json';
+       vReultHTTP := IdHTTP1.Post(url,JsonToSend);
+       if copy(vReultHTTP,0,4)='{"OK'then
+       begin
+         vReultHTTP := StringReplace(vReultHTTP,'{"OK":"','',[rfReplaceAll]);
+         vReultHTTP := StringReplace(vReultHTTP,'"}','',[rfReplaceAll]);
+         AlterarFlagAuxItemRev(vQryLoop.FieldByName('ID').AsString,vReultHTTP);
+       end;
+    end;
+    vQryLoop.Next;
+   end
+ end;
 end;
 
 function TdmSync.PostMonitoramento: string;
@@ -917,6 +1057,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('auxculturas');
    Url :='http://'+Host+':'+Porta+'/GetCulturas';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -931,17 +1072,8 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TCulturas.Close;
           dmDB.TCulturas.Open;
-          dmDB.TCulturas.Filtered := false;
-          dmDB.TCulturas.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TCulturas.Filtered := true;
-          if dmDB.TCulturas.RecordCount>0 then
-            dmDB.TCulturas.Edit
-          else
-          begin
-            dmDB.TCulturas.Close;
-            dmDB.TCulturas.Open;
-            dmDB.TCulturas.Insert;
-          end;
+          dmDB.TCulturas.Insert;
+
           dmDB.TCulturasId.AsString                 := vId;
           dmDB.TCulturasstatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TCulturasnome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -1032,17 +1164,6 @@ begin
             end;
 
           end;
-//          dmDB.TDetReceituario.Close;
-//          dmDB.TDetReceituario.Open;
-//          dmDB.TDetReceituario.Insert;
-//          dmDB.TDetReceituarioId.AsString                 := vId;
-//          dmDB.TDetReceituariostatus.AsString             := vJoGetJ.GetValue('Status').value;
-//          dmDB.TDetReceituarioidreceiturario.AsString     := vJoGetJ.GetValue('IDReceituario').value;
-//          dmDB.TDetReceituarioFinalidade.AsString         := vJoGetJ.GetValue('Finalidade').value;
-//          dmDB.TDetReceituarioidproduto.AsString          := vJoGetJ.GetValue('IdProduto').value;
-//          dmDB.TDetReceituarioProduto.AsString            := vJoGetJ.GetValue('Produto').value;
-//          dmDB.TDetReceituarioqtdporhe.AsString           := vJoGetJ.GetValue('QtdeIndicada').value;
-
        end;
        result:='Detalhe Receituario Baixadas com Sucesso!'
     end
@@ -1106,12 +1227,13 @@ begin
          Clear;
          Add('INSERT INTO detreceiturariotalhao');
          Add('(id, status,idtalhao,areahe,idreceiturario)');
-         Add('VALUES(:id, :status,:idtalhao,:areahe,:idreceiturario)');
-         ParamByName('id').AsString              := vid;
-         ParamByName('status').AsString          := vJoGetJ.GetValue('status').value;
-         ParamByName('idtalhao').AsString        := vJoGetJ.GetValue('idtalhao').value;
-         ParamByName('areahe').AsString          := vJoGetJ.GetValue('areahe').value;
-         ParamByName('idreceiturario').AsString  := vJoGetJ.GetValue('idreceiturario').value;
+         Add('VALUES(');
+         Add(vid+',');
+         Add(vJoGetJ.GetValue('status').value+',');
+         Add(vJoGetJ.GetValue('idtalhao').value+',');
+         Add(StringReplace(vJoGetJ.GetValue('areahe').value,',','.',[rfReplaceAll])+',');
+         Add(vJoGetJ.GetValue('idreceiturario').value);
+         Add(')');
          try
            vQryAux.ExecSQL;
           except
@@ -1158,27 +1280,22 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('localestoque');
    Url := 'http://'+Host+':'+Porta+'/GetLocalEstoque';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
     vJsonString        := IdHTTP1.Get(URL);
     if(vJsonString<>'{"TLocalEstoque":[') then
     begin
-      TSyncLocalEstoque.Close;
-      TSyncLocalEstoque.Open;
       jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
        vJoGet := jSubObj.GetValue<TJSONArray>('TLocalEstoque') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
-          vId               := vJoGetJ.GetValue('id').value;
-          TSyncLocalEstoque.Filtered := false;
-          TSyncLocalEstoque.Filter   := 'id='+vId;
-          TSyncLocalEstoque.Filtered := true;
-          if not TSyncLocalEstoque.IsEmpty then
-           TSyncLocalEstoque.Edit
-          else
-           TSyncLocalEstoque.Insert;
+          vId             := vJoGetJ.GetValue('id').value;
+          TSyncLocalEstoque.Close;
+          TSyncLocalEstoque.Open;
+          TSyncLocalEstoque.Insert;
           for z := 0 to TSyncLocalEstoque.Fields.Count -1 do
           begin
            vField:= StringReplace(TSyncLocalEstoque.Fields[z].Name,
@@ -1187,10 +1304,10 @@ begin
           end;
           TSyncLocalEstoque.ApplyUpdates(-1);
        end;
-       result:='Pluviometro Local de Estoque Baixados com Sucesso!'
+       result:='Local de Estoque Baixados com Sucesso!'
     end
     else
-     Result :='Pluviometro Local de Estoque Baixados com Sucesso!'
+     Result :='Local de Estoque Baixados com Sucesso!'
    except
    on E: Exception do
      begin
@@ -1354,54 +1471,53 @@ end;
 
 function TdmSync.GetPlanoAuxItemRevisao: string;
 var
- Url,vJsonString,vIsert,
- vField,vFieldJS,vId:string;
+ Url,vJsonString,vID:string;
  vJoInsert,vJoItemO,vJoItemO1,jSubObj,vJoGetJ : TJSONObject;
  vJoItem,vJoItem1,vJoGet  : TJSONArray;
  JsonValue,JsonId:TJSONValue;
- I,J,z:integer;
+ I,J:integer;
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
-   Url := 'http://'+Host+':'+Porta+'/GetAuxItemRevisao';
+   DeletaTabelaSync('auxrevisaoitens');
+   Url :='http://'+Host+':'+Porta+'/GetAuxItemRevisao';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
     vJsonString        := IdHTTP1.Get(URL);
-    if IdHTTP1.ResponseCode=200 then
+    if(vJsonString<>'{"Mensagem":"Nenhum Aux Item Revisao encontrado!"}') then
     begin
-      TAuxRevisaoItem.Close;
-      TAuxRevisaoItem.Open;
       jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
        vJoGet := jSubObj.GetValue<TJSONArray>('TAuxRevisaoItem') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
-          vId               := vJoGetJ.GetValue('id').value;
-          TAuxRevisaoItem.Filtered := false;
-          TAuxRevisaoItem.Filter   := 'id='+vId;
-          TAuxRevisaoItem.Filtered := true;
-          if not TAuxRevisaoItem.IsEmpty then
-           TAuxRevisaoItem.Edit
-          else
-           TAuxRevisaoItem.Insert;
-          for z := 0 to TAuxRevisaoItem.Fields.Count -1 do
+          vID             := vJoGetJ.GetValue('INSERT').value;
+          if vID.Length>0 then
           begin
-           vField:= StringReplace(TAuxRevisaoItem.Fields[z].Name,
-            'TAuxRevisaoItem','',[rfReplaceAll]);
-           TAuxRevisaoItem.FieldByName(vField).AsString := vJoGetJ.GetValue(vField).value;
+            with qryAux,qryAux.SQL do
+            begin
+              Clear;
+              Add(vID);
+              try
+                  ExecSQL;
+              except
+                on E: Exception do
+                 result:=('Erro: ' + E.Message );
+              end;
+            end;
           end;
-          TAuxRevisaoItem.ApplyUpdates(-1);
        end;
-       result:='Items Revisao Baixados com Sucesso!'
+       result:='Aux Itens Baixado com Sucesso!'
     end
     else
-     Result :='Items Revisao Baixados com Sucesso!'
+     Result :=dmDB.LimpaResut(vJsonString);
    except
    on E: Exception do
      begin
        result:='Erro ao comunicar com Servidor:'+E.Message;
      end;
    end;
+
 end;
 
 function TdmSync.GetPlanoItemRevisao: string;
@@ -1468,6 +1584,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('auxatividadeabastecimento');
    Url := 'http://'+Host+':'+Porta+'/GetAtividadeAbastecimento';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1519,6 +1636,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('auxcobertura');
    Url :='http://'+Host+':'+Porta+'/GetCobertura';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1533,17 +1651,8 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TAuxCobertura.Close;
           dmDB.TAuxCobertura.Open;
-          dmDB.TAuxCobertura.Filtered := false;
-          dmDB.TAuxCobertura.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TAuxCobertura.Filtered := true;
-          if dmDB.TAuxCobertura.RecordCount>0 then
-            dmDB.TAuxCobertura.Edit
-          else
-          begin
-            dmDB.TAuxCobertura.Close;
-            dmDB.TAuxCobertura.Open;
-            dmDB.TAuxCobertura.Insert;
-          end;
+          dmDB.TAuxCobertura.Insert;
+
           dmDB.TAuxCoberturaId.AsString                 := vId;
           dmDB.TAuxCoberturastatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TAuxCoberturanome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -1577,6 +1686,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('comprador');
    Url := 'http://'+Host+':'+Porta+'/GetComprador';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1591,13 +1701,10 @@ begin
        begin
           vJoGetJ            := vJoGet.Items[i] as TJSONObject;
           vId                := vJoGetJ.GetValue('id').value;
-          Comprador.Filtered := false;
-          Comprador.Filter   := 'id='+vId;
-          Comprador.Filtered := true;
-          if not Comprador.IsEmpty then
-           Comprador.Edit
-          else
-           Comprador.Insert;
+          comprador.Close;
+          Comprador.Open;
+
+          Comprador.Insert;
           for z := 0 to Comprador.Fields.Count -1 do
           begin
            vField:= StringReplace(Comprador.Fields[z].Name,
@@ -1636,27 +1743,22 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('contratos');
    Url := 'http://'+Host+':'+Porta+'/GetContratos';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
     vJsonString        := IdHTTP1.Get(URL);
     if(vJsonString<>'{"Contratos":[') then
     begin
-      Contratos.Close;
-      Contratos.Open;
       jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
        vJoGet := jSubObj.GetValue<TJSONArray>('Contratos') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
           vJoGetJ            := vJoGet.Items[i] as TJSONObject;
           vId                := vJoGetJ.GetValue('id').value;
-          Contratos.Filtered := false;
-          Contratos.Filter   := 'id='+vId;
-          Contratos.Filtered := true;
-          if not Contratos.IsEmpty then
-           Contratos.Edit
-          else
-           Contratos.Insert;
+          Contratos.Close;
+          Contratos.Open;
+          Contratos.Insert;
           for z := 0 to Contratos.Fields.Count -1 do
           begin
            vField:= StringReplace(Contratos.Fields[z].Name,
@@ -1694,6 +1796,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('auxcultivares');
    Url :='http://'+Host+':'+Porta+'/GetCultivares';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1708,17 +1811,7 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TCultivares.Close;
           dmDB.TCultivares.Open;
-          dmDB.TCultivares.Filtered := false;
-          dmDB.TCultivares.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TCultivares.Filtered := true;
-          if dmDB.TCultivares.RecordCount>0 then
-            dmDB.TCultivares.Edit
-          else
-          begin
-            dmDB.TCultivares.Close;
-            dmDB.TCultivares.Open;
-            dmDB.TCultivares.Insert;
-          end;
+          dmDB.TCultivares.Insert;
           dmDB.TCultivaresId.AsString                 := vId;
           dmDB.TCultivaresstatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TCultivaresnome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -1751,7 +1844,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
-   Url :='http://'+Host+':'+Porta+'/GetTalhoes';
+  Url :='http://'+Host+':'+Porta+'/GetTalhoes';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
     vJsonString        := IdHTTP1.Get(URL);
@@ -1809,6 +1902,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('auxtipooperacaosolido');
    Url :='http://'+Host+':'+Porta+'/GetAuxTipoAplicacaoSolido';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1823,17 +1917,8 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TTipoAplicacaoSolido.Close;
           dmDB.TTipoAplicacaoSolido.Open;
-          dmDB.TTipoAplicacaoSolido.Filtered := false;
-          dmDB.TTipoAplicacaoSolido.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TTipoAplicacaoSolido.Filtered := true;
-          if dmDB.TTipoAplicacaoSolido.RecordCount>0 then
-            dmDB.TTipoAplicacaoSolido.Edit
-          else
-          begin
-            dmDB.TTipoAplicacaoSolido.Close;
-            dmDB.TTipoAplicacaoSolido.Open;
-            dmDB.TTipoAplicacaoSolido.Insert;
-          end;
+          dmDB.TTipoAplicacaoSolido.Insert;
+
           dmDB.TTipoAplicacaoSolidoId.AsString                 := vId;
           dmDB.TTipoAplicacaoSolidostatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TTipoAplicacaoSolidonome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -1844,7 +1929,7 @@ begin
              result:=('Erro: ' + E.Message );
           end;
        end;
-       result:='Tipo Aplicação Sólido Baixado com Sucesso!'
+       result:='Tipo Aplicação Solido Baixado com Sucesso!'
     end
     else
      Result :=dmDB.LimpaResut(vJsonString);
@@ -1866,6 +1951,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('auxtipoocorrencia');
    Url :='http://'+Host+':'+Porta+'/GetTipoOcorrencia';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1880,17 +1966,8 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TAuxOcorrencia.Close;
           dmDB.TAuxOcorrencia.Open;
-          dmDB.TAuxOcorrencia.Filtered := false;
-          dmDB.TAuxOcorrencia.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TAuxOcorrencia.Filtered := true;
-          if dmDB.TAuxOcorrencia.RecordCount>0 then
-            dmDB.TAuxOcorrencia.Edit
-          else
-          begin
-            dmDB.TAuxOcorrencia.Close;
-            dmDB.TAuxOcorrencia.Open;
-            dmDB.TAuxOcorrencia.Insert;
-          end;
+          dmDB.TAuxOcorrencia.Insert;
+
           dmDB.TAuxOcorrenciaId.AsString                 := vId;
           dmDB.TAuxOcorrenciastatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TAuxOcorrencianome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -1923,6 +2000,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('safra');
    Url :='http://'+Host+':'+Porta+'/GetSafra';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1937,17 +2015,8 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TSafra.Close;
           dmDB.TSafra.Open;
-          dmDB.TSafra.Filtered := false;
-          dmDB.TSafra.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TSafra.Filtered := true;
-          if dmDB.TSafra.RecordCount>0 then
-            dmDB.TSafra.Edit
-          else
-          begin
-            dmDB.TSafra.Close;
-            dmDB.TSafra.Open;
-            dmDB.TSafra.Insert;
-          end;
+          dmDB.TSafra.Insert;
+
           dmDB.TSafraId.AsString                 := vId;
           dmDB.TSafrastatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TSafranome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -1980,6 +2049,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('setor');
    Url :='http://'+Host+':'+Porta+'/GetSetores';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -1994,17 +2064,8 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TSetor.Close;
           dmDB.TSetor.Open;
-          dmDB.TSetor.Filtered := false;
-          dmDB.TSetor.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TSetor.Filtered := true;
-          if dmDB.TSetor.RecordCount>0 then
-            dmDB.TSetor.Edit
-          else
-          begin
-            dmDB.TSetor.Close;
-            dmDB.TSetor.Open;
-            dmDB.TSetor.Insert;
-          end;
+          dmDB.TSetor.Insert;
+
           dmDB.TSetorId.AsString                 := vId;
           dmDB.TSetorstatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TSetornome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -2029,6 +2090,28 @@ begin
        result:='Erro ao comunicar com Servidor:'+E.Message;
      end;
    end;
+end;
+
+procedure TdmSync.AbreAbastecimentoSync(idAbastecimento: string);
+begin
+ with TSyncAbastecimento,TSyncAbastecimento.SQL do
+ begin
+  Clear;
+  Add('select  *  from abastecimento');
+  Add('where id='+idAbastecimento);
+  Open;
+ end;
+end;
+
+procedure TdmSync.AbreAuxItemRevisaoSync(vid: string);
+begin
+ with TPostAuxItemRevisao,TPostAuxItemRevisao.SQL do
+ begin
+  Clear;
+  Add('select  *  from auxrevisaoitens');
+  Add('where id='+vid);
+  Open;
+ end;
 end;
 
 procedure TdmSync.AbreDetReceituario(vIdReceituario: string);
@@ -2087,7 +2170,7 @@ begin
     Open;
   except
    on E : Exception do
-    ShowMessage('Erro ao inserir Configuração : '+E.Message);
+    frmPrincipal.myShowMenssagem('Erro ao inserir Configuração : '+E.Message);
   end;
  end;
 end;
@@ -2121,6 +2204,39 @@ begin
   Clear;
   Add('select * from monitoramentopragas');
   Add('where id='+id);
+  Open;
+ end;
+end;
+
+procedure TdmSync.AbreRevisaoItemSync(vId: string);
+begin
+ with TPostRevisaoItem,TPostRevisaoItem.SQL do
+ begin
+  Clear;
+  Add('select * from revisaomaquinaitens');
+  Add('where id='+vid);
+  Open;
+ end;
+end;
+
+procedure TdmSync.AbreRevisaoServicoSync(vId: string);
+begin
+ with TPostRevisaoServico,TPostRevisaoServico.SQL do
+ begin
+  Clear;
+  Add('select * from servicomanutencao');
+  Add('where id='+vid);
+  Open;
+ end;
+end;
+
+procedure TdmSync.AbreRevisaoSync(vId: string);
+begin
+ with TPostRevisao,TPostRevisao.SQL do
+ begin
+  Clear;
+  Add('select * from revisaomaquina');
+  Add('where id='+vid);
   Open;
  end;
 end;
@@ -2160,12 +2276,30 @@ begin
 end;
 
 
-procedure TdmSync.AlterarFlagAbastecimento;
+procedure TdmSync.AlterarFlagAbastecimento(id:string);
 begin
  with qryAux,qryAux.SQL do
  begin
    Clear;
    Add('update abastecimento set syncfaz=1');
+   Add('where id='+id);
+   ExecSQL;
+ end;
+end;
+
+procedure TdmSync.AlterarFlagAuxItemRev(vIdOld,vIdNew:string);
+begin
+ with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('update auxrevisaoitens set id='+vIdNew);
+   Add(',syncfaz=1');
+   Add('where id='+vIdOld);
+   ExecSQL;
+
+   Clear;
+   Add('update revisaomaquinaitens set iditem='+vIdNew);
+   Add('where iditem='+vIdOld);
    ExecSQL;
  end;
 end;
@@ -2186,6 +2320,50 @@ begin
  begin
    Clear;
    Add('update tranferenciaLocalestoque set syncfaz=1');
+   ExecSQL;
+ end;
+end;
+
+procedure TdmSync.AlterarFlagRevisao(vIdOld, vIdNew: string);
+begin
+ with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('update revisaomaquina set id='+vIdNew);
+   Add(',syncfaz=1');
+   Add('where id='+vIdOld);
+   ExecSQL;
+
+   Clear;
+   Add('update revisaomaquinaitens set idrevisao='+vIdNew);
+   Add('where idrevisao='+vIdOld);
+   ExecSQL;
+
+   Clear;
+   Add('update servicomanutencao set idrevisao='+vIdNew);
+   Add('where idrevisao='+vIdOld);
+   ExecSQL;
+ end;
+end;
+
+procedure TdmSync.AlterarFlagRevisaoItem(vId: string);
+begin
+ with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('update revisaomaquinaitens set syncfaz=1');
+   Add('where id='+vId);
+   ExecSQL;
+ end;
+end;
+
+procedure TdmSync.AlterarFlagRevisaoServico(vId: string);
+begin
+ with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('update servicomanutencao set syncfaz=1');
+   Add('where id='+vId);
    ExecSQL;
  end;
 end;
@@ -2232,7 +2410,7 @@ begin
     ExecSQL;
    except
     on E: Exception do
-      ShowMessage(e.Message);
+      frmPrincipal.myShowMenssagem(e.Message);
    end
  end;
 end;
@@ -2240,13 +2418,13 @@ end;
 procedure TdmSync.CompradorReconcileError(DataSet: TFDDataSet; E: EFDException;
   UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
 begin
- ShowMessage(e.Message);
+ frmPrincipal.myShowMenssagem(e.Message);
 end;
 
 procedure TdmSync.ContratosReconcileError(DataSet: TFDDataSet; E: EFDException;
   UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
 begin
- ShowMessage(e.Message);
+ frmPrincipal.myShowMenssagem(e.Message);
 end;
 
 procedure TdmSync.DeletaDetReceituario(IdRec: string);
@@ -2293,6 +2471,22 @@ begin
  end;
 end;
 
+procedure TdmSync.DeletaReceituarioSync;
+begin
+ with qryAux,qryAux.SQL do
+ begin
+   Clear;
+   Add('delete from receiturario');
+   Add('where status=1');
+   try
+    ExecSQL;
+   except
+     on E: Exception do
+      frmPrincipal.myShowMenssagem(e.Message);
+   end
+ end;
+end;
+
 procedure TdmSync.DeletaTabelaSync(Atabela: string);
 begin
  with qryAux,qryAux.SQL do
@@ -2303,7 +2497,7 @@ begin
     ExecSQL;
    except
      on E: Exception do
-      ShowMessage(e.Message);
+      frmPrincipal.myShowMenssagem(e.Message);
    end
  end;
 end;
@@ -2311,7 +2505,7 @@ end;
 procedure TdmSync.EmbarqueReconcileError(DataSet: TFDDataSet; E: EFDException;
   UpdateKind: TFDDatSRowState; var Action: TFDDAptReconcileAction);
 begin
- ShowMessage(e.Message);
+ frmPrincipal.myShowMenssagem(e.Message);
 end;
 
 function TdmSync.GetAreas: string;
@@ -2324,6 +2518,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('areas');
    Url :='http://'+Host+':'+Porta+'/GetAreas';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -2338,17 +2533,7 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TAreas.Close;
           dmDB.TAreas.Open;
-          dmDB.TAreas.Filtered := false;
-          dmDB.TAreas.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TAreas.Filtered := true;
-          if dmDB.TAreas.RecordCount>0 then
-            dmDB.TAreas.Edit
-          else
-          begin
-            dmDB.TAreas.Close;
-            dmDB.TAreas.Open;
-            dmDB.TAreas.Insert;
-          end;
+          dmDB.TAreas.Insert;
           dmDB.TAreasId.AsString                 := vId;
           dmDB.TAreasstatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TAreasnome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -2445,6 +2630,32 @@ begin
    end;
 end;
 
+function TdmSync.GetTipoDB:string;
+var
+ Url,vJsonString,vIsert,
+ vField,vFieldJS,vTipo:string;
+ vJoInsert,vJoItemO,vJoItemO1,jSubObj,vJoGetJ : TJSONObject;
+ vJoItem,vJoItem1,vJoGet  : TJSONArray;
+ JsonValue,JsonId:TJSONValue;
+ I,J,z:integer;
+ joName,objJson,joItem : TJSONObject;
+ joItems: TJSONArray;
+begin
+   Url := 'http://'+Host+':'+Porta+'/GetTipoDB';
+   IdHTTP1.Request.CustomHeaders.Clear;
+   vJsonString        := IdHTTP1.Get(URL);
+   jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
+   vJoGet := jSubObj.GetValue<TJSONArray>('TipoDB') as TJSONArray;
+   vJoGetJ         := vJoGet.Items[0] as TJSONObject;
+   vTipo   := vJoGetJ.GetValue('TIPO').value;
+   with qryAux,qryAux.SQL do
+   begin
+     Clear;
+     Add('UPDATE CONFIG SET TIPODB='+vTipo.QuotedString);
+     ExecSQL;
+   end;
+end;
+
 function TdmSync.GetPluviometros:string;
 var
  Url,vJsonString,vIsert,
@@ -2456,27 +2667,22 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('Pluviometro');
    Url := 'http://'+Host+':'+Porta+'/GetPluviometro';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
     vJsonString        := IdHTTP1.Get(URL);
     if(vJsonString<>'{"TPluviometro":[') then
     begin
-      TSyncPluviometro.Close;
-      TSyncPluviometro.Open;
        jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
        vJoGet := jSubObj.GetValue<TJSONArray>('TPluviometro') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
           vId               := vJoGetJ.GetValue('id').value;
-          TSyncPluviometro.Filtered := false;
-          TSyncPluviometro.Filter   := 'id='+vId;
-          TSyncPluviometro.Filtered := true;
-          if not TSyncPluviometro.IsEmpty then
-           TSyncPluviometro.Edit
-          else
-           TSyncPluviometro.Insert;
+          TSyncPluviometro.Close;
+          TSyncPluviometro.Open;
+          TSyncPluviometro.Insert;
           for z := 0 to TSyncPluviometro.Fields.Count -1 do
           begin
            vField                                        := StringReplace(TSyncPluviometro.Fields[z].Name,'TSyncPluviometro','',[rfReplaceAll]);
@@ -2498,47 +2704,46 @@ end;
 
 function TdmSync.GetPluviometroTalhoes:string;
 var
- Url,vJsonString,vIsert,
- vField,vFieldJS,vId:string;
+ Url,vJsonString,vID:string;
  vJoInsert,vJoItemO,vJoItemO1,jSubObj,vJoGetJ : TJSONObject;
  vJoItem,vJoItem1,vJoGet  : TJSONArray;
  JsonValue,JsonId:TJSONValue;
- I,J,z:integer;
+ I,J:integer;
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
-   Url := 'http://'+Host+':'+Porta+'/GetPluviometroTalhoes';
+   DeletaTabelaSync('PluviometroTalhoes');
+   Url :='http://'+Host+':'+Porta+'/GetPluviometroTalhoes';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
     vJsonString        := IdHTTP1.Get(URL);
-    if(vJsonString<>'{"TPluviometroTalhoes":[') then
+    if(vJsonString<>'{"Mensagem":"Nenhum Pluviometro Talhoes encontrado!"}') then
     begin
-      TSyncPluviometroTalhoes.Close;
-      TSyncPluviometroTalhoes.Open;
       jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
        vJoGet := jSubObj.GetValue<TJSONArray>('TPluviometroTalhoes') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
-          vId               := vJoGetJ.GetValue('id').value;
-          TSyncPluviometroTalhoes.Filtered := false;
-          TSyncPluviometroTalhoes.Filter   := 'id='+vId;
-          TSyncPluviometroTalhoes.Filtered := true;
-          if not TSyncPluviometroTalhoes.IsEmpty then
-           TSyncPluviometroTalhoes.Edit
-          else
-           TSyncPluviometroTalhoes.Insert;
-          for z := 0 to TSyncPluviometroTalhoes.Fields.Count -1 do
+          vID             := vJoGetJ.GetValue('INSERT').value;
+          if vID.Length>0 then
           begin
-           vField                                        := StringReplace(TSyncPluviometroTalhoes.Fields[z].Name,'TSyncPluviometroTalhoes','',[rfReplaceAll]);
-           TSyncPluviometroTalhoes.FieldByName(vField).AsString := vJoGetJ.GetValue(vField).value;
+            with qryAux,qryAux.SQL do
+            begin
+              Clear;
+              Add(vID);
+              try
+                  ExecSQL;
+              except
+                on E: Exception do
+                 result:=('Erro: ' + E.Message );
+              end;
+            end;
           end;
-          TSyncPluviometroTalhoes.ApplyUpdates(-1);
        end;
-       result:='Pluviometro Talhoes Baixados com Sucesso!'
+       result:='Pluviometro Talhoes Baixado com Sucesso!'
     end
     else
-     Result :=vJsonString;
+     Result :=dmDB.LimpaResut(vJsonString);
    except
    on E: Exception do
      begin
@@ -3169,6 +3374,123 @@ begin
  end;
 end;
 
+function TdmSync.PostRevisao: string;
+var
+ URL,vReultHTTP:STRING;
+ JsonToSend  : TStringStream;
+ I:integer;
+ vQryLoop :TFDQuery;
+begin
+ vQryLoop := TFDQuery.Create(nil);
+ vQryLoop.Connection := dmDB.FDConn;
+ with vQryLoop,vQryLoop.SQL do
+ begin
+   Clear;
+   Add('select * from revisaomaquina where syncfaz=0 and status=3');
+   Open;
+   while not vQryLoop.eof do
+   begin
+    AbreRevisaoSync(vQryLoop.FieldByName('ID').AsString);
+    if not TPostRevisao.IsEmpty then
+    begin
+       JsonToSend := TStringStream.Create(nil);
+       TPostRevisao.SaveToStream(JsonToSend,sfJSON);
+       Url := 'http://'+Host+':'+Porta+'/Revisao';
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.ContentType := 'application/json';
+       IdHTTP1.Request.Accept      := 'application/json';
+       vReultHTTP := IdHTTP1.Post(url,JsonToSend);
+       if copy(vReultHTTP,0,4)='{"OK'then
+       begin
+         vReultHTTP := StringReplace(vReultHTTP,'{"OK":"','',[rfReplaceAll]);
+         vReultHTTP := StringReplace(vReultHTTP,'"}','',[rfReplaceAll]);
+         AlterarFlagRevisao(vQryLoop.FieldByName('ID').AsString,vReultHTTP);
+       end;
+    end;
+    vQryLoop.Next;
+   end
+ end;
+end;
+
+function TdmSync.PostRevisaoItens: string;
+var
+ URL,vReultHTTP:STRING;
+ JsonToSend  : TStringStream;
+ I:integer;
+ vQryLoop :TFDQuery;
+begin
+ vQryLoop := TFDQuery.Create(nil);
+ vQryLoop.Connection := dmDB.FDConn;
+ with vQryLoop,vQryLoop.SQL do
+ begin
+   Clear;
+   Add('select * from revisaomaquinaitens where syncfaz=0 and status=2');
+   Open;
+   while not vQryLoop.eof do
+   begin
+    AbreRevisaoItemSync(vQryLoop.FieldByName('ID').AsString);
+    if not TPostRevisaoItem.IsEmpty then
+    begin
+       JsonToSend := TStringStream.Create(nil);
+       TPostRevisaoItem.SaveToStream(JsonToSend,sfJSON);
+       Url := 'http://'+Host+':'+Porta+'/RevisaoItens';
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.ContentType := 'application/json';
+       IdHTTP1.Request.Accept      := 'application/json';
+       vReultHTTP := IdHTTP1.Post(url,JsonToSend);
+       if copy(vReultHTTP,0,4)='{"OK'then
+       begin
+         vReultHTTP := StringReplace(vReultHTTP,'{"OK":"','',[rfReplaceAll]);
+         vReultHTTP := StringReplace(vReultHTTP,'"}','',[rfReplaceAll]);
+         AlterarFlagRevisaoItem(vQryLoop.FieldByName('ID').AsString);
+       end;
+    end;
+    vQryLoop.Next;
+   end
+ end;
+end;
+
+function TdmSync.PostRevisaoServico: string;
+var
+ URL,vReultHTTP:STRING;
+ JsonToSend  : TStringStream;
+ I:integer;
+ vQryLoop :TFDQuery;
+begin
+ vQryLoop := TFDQuery.Create(nil);
+ vQryLoop.Connection := dmDB.FDConn;
+ with vQryLoop,vQryLoop.SQL do
+ begin
+   Clear;
+   Add('select * from servicomanutencao where syncfaz=0');
+   Open;
+   while not vQryLoop.eof do
+   begin
+    AbreRevisaoServicoSync(vQryLoop.FieldByName('ID').AsString);
+    if not TPostRevisaoServico.IsEmpty then
+    begin
+       JsonToSend := TStringStream.Create(nil);
+       TPostRevisaoServico.SaveToStream(JsonToSend,sfJSON);
+       Url := 'http://'+Host+':'+Porta+'/RevisaoServicos';
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.CustomHeaders.Clear;
+       IdHTTP1.Request.ContentType := 'application/json';
+       IdHTTP1.Request.Accept      := 'application/json';
+       vReultHTTP := IdHTTP1.Post(url,JsonToSend);
+       if copy(vReultHTTP,0,4)='{"OK'then
+       begin
+         vReultHTTP := StringReplace(vReultHTTP,'{"OK":"','',[rfReplaceAll]);
+         vReultHTTP := StringReplace(vReultHTTP,'"}','',[rfReplaceAll]);
+         AlterarFlagRevisaoItem(vQryLoop.FieldByName('ID').AsString);
+       end;
+    end;
+    vQryLoop.Next;
+   end
+ end;
+end;
+
 function TdmSync.TestaServidor: string;
 var
  Url,vJsonString,vID:string;
@@ -3196,7 +3518,7 @@ procedure TdmSync.TSyncPragasReconcileError(DataSet: TFDDataSet;
 begin
  TThread.Synchronize(nil, procedure
  begin
-  ShowMessage(e.Message);
+  frmPrincipal.myShowMenssagem(e.Message);
  end);
 end;
 
@@ -3204,7 +3526,7 @@ procedure TdmSync.TSyncReceituarioReconcileError(DataSet: TFDDataSet;
   E: EFDException; UpdateKind: TFDDatSRowState;
   var Action: TFDDAptReconcileAction);
 begin
-  ShowMessage(e.Message);
+  frmPrincipal.myShowMenssagem(e.Message);
 end;
 
 function TdmSync.VerificaReceituarioExiste(id: string): Boolean;
@@ -3219,7 +3541,7 @@ begin
    except
     on E: Exception do
     begin
-      ShowMessage(E.Message);
+      frmPrincipal.myShowMenssagem(E.Message);
     end;
    end;
    Result := TSyncReceituario.IsEmpty;
@@ -3348,6 +3670,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   DeletaTabelaSync('operacoes');
    Url :='http://'+Host+':'+Porta+'/GetOperacoes';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -3362,17 +3685,7 @@ begin
           vID             := vJoGetJ.GetValue('ID').value;
           dmDB.TOperacoes.Close;
           dmDB.TOperacoes.Open;
-          dmDB.TOperacoes.Filtered := false;
-          dmDB.TOperacoes.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TOperacoes.Filtered := true;
-          if dmDB.TOperacoes.RecordCount>0 then
-            dmDB.TOperacoes.Edit
-          else
-          begin
-            dmDB.TOperacoes.Close;
-            dmDB.TOperacoes.Open;
-            dmDB.TOperacoes.Insert;
-          end;
+          dmDB.TOperacoes.Insert;
           dmDB.TOperacoesId.AsString                 := vId;
           dmDB.TOperacoesstatus.AsString             := vJoGetJ.GetValue('Status').value;
           dmDB.TOperacoesnome.AsString               := vJoGetJ.GetValue('Nome').value;
@@ -3455,6 +3768,7 @@ var
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
+   dmSync.DeletaReceituarioSync;
    Url :='http://'+Host+':'+Porta+'/GetReceituario';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -3467,57 +3781,29 @@ begin
        begin
           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
           vID             := vJoGetJ.GetValue('ID').value;
-          if dmSync.VerificaReceituarioExiste(vID) then
-          begin
-            TSyncReceituario.Insert;
-            TSyncReceituarioId.AsString                 := vId;
-            TSyncReceituariostatus.AsString             := vJoGetJ.GetValue('Status').value;
-            TSyncReceituarionome.AsString               := vJoGetJ.GetValue('Nome').value;
-            TSyncReceituarioresponsavel.AsString        := vJoGetJ.GetValue('Responsavel').value;
-            TSyncReceituarioDataRegistro.AsString       := vJoGetJ.GetValue('DataReg').value;
-            TSyncReceituariodatarecomendacao.AsString   := vJoGetJ.GetValue('datarecomendacao').value;
-            TSyncReceituariodataprevaplicacao.AsString  := vJoGetJ.GetValue('dataprevaplicacao').value;
-            TSyncReceituarioobservacao.AsString         := vJoGetJ.GetValue('observacao').value;
-            if vJoGetJ.GetValue('Status').value='0' then
-             TSyncReceituariostatus.AsString            :='1';
-            try
-             TSyncReceituario.ApplyUpdates(-1);
-            DeletaDetReceituario(vId);
-            GetDetReceituario(vId);
-            GetDetReceituarioTalhoes(vId);
-            except
-              on E: Exception do
-               result:=('Erro: ' + E.Message );
-            end;
-          end
-          else
-          begin
-            TSyncReceituario.Edit;
-            TSyncReceituarioobservacao.AsString         := vJoGetJ.GetValue('observacao').value;
-            if vJoGetJ.GetValue('Status').value='0' then
-             TSyncReceituariostatus.AsString             :='1'
-            else
-             TSyncReceituariostatus.AsString             := vJoGetJ.GetValue('Status').value;
-            TSyncReceituariodatarecomendacao.AsString   := vJoGetJ.GetValue('datarecomendacao').value;
-            if vJoGetJ.GetValue('dataprevaplicacao').value.Length>0 then
-             TSyncReceituariodataprevaplicacao.AsString  := vJoGetJ.GetValue('dataprevaplicacao').value
-            else
-             TSyncReceituariodataprevaplicacao.AsVariant := null;
-            try
-             TSyncReceituario.ApplyUpdates(-1);
-             if vJoGetJ.GetValue('Status').value='1' then
-             begin
-              DeletaDetReceituario(vId);
-              GetDetReceituario(vId);
-              GetDetReceituarioTalhoes(vId);
-             end;
-            except
-              on E: Exception do
-               result:=('Erro: ' + E.Message );
-            end;
+          TSyncReceituario.Close;
+          TSyncReceituario.Open;
+          TSyncReceituario.Insert;
+          TSyncReceituarioId.AsString                 := vId;
+          TSyncReceituariostatus.AsString             := vJoGetJ.GetValue('Status').value;
+          TSyncReceituarionome.AsString               := vJoGetJ.GetValue('Nome').value;
+          TSyncReceituarioresponsavel.AsString        := vJoGetJ.GetValue('Responsavel').value;
+          TSyncReceituarioDataRegistro.AsString       := vJoGetJ.GetValue('DataReg').value;
+          TSyncReceituariodatarecomendacao.AsString   := vJoGetJ.GetValue('datarecomendacao').value;
+          TSyncReceituariodataprevaplicacao.AsString  := vJoGetJ.GetValue('dataprevaplicacao').value;
+          TSyncReceituarioobservacao.AsString         := vJoGetJ.GetValue('observacao').value;
+          if vJoGetJ.GetValue('Status').value='0' then
+           TSyncReceituariostatus.AsString            :='1';
+          try
+           TSyncReceituario.ApplyUpdates(-1);
+          DeletaDetReceituario(vId);
+          GetDetReceituario(vId);
+          GetDetReceituarioTalhoes(vId);
+          except
+            on E: Exception do
+             result:=('Erro: ' + E.Message );
           end;
-        end;
-       result:='Receituario Baixadas com Sucesso!'
+       end
     end
     else
      Result :=dmDB.LimpaResut(vJsonString);
@@ -3531,77 +3817,52 @@ end;
 
 function TdmSync.GetRevisao: string;
 var
- Url,vJsonString,vIsert,
- vField,vFieldJS,vId,vNome,vIntervaloHoras,
- vidplanorevisao,vidmaquina,vdatainicio,vdatafim,vhorimetro,
- vhorimetroproxima:string;
+ Url,vJsonString,vID:string;
  vJoInsert,vJoItemO,vJoItemO1,jSubObj,vJoGetJ : TJSONObject;
  vJoItem,vJoItem1,vJoGet  : TJSONArray;
  JsonValue,JsonId:TJSONValue;
- I,J,z:integer;
+ I,J:integer;
  joName,objJson,joItem : TJSONObject;
  joItems: TJSONArray;
 begin
-   Url := 'http://'+Host+':'+Porta+'/GetRevisao';
-   IdHTTP1.Request.CustomHeaders.Clear;
-   try
-    vJsonString        := IdHTTP1.Get(URL);
-    if IdHTTP1.ResponseCode=200 then
-    begin
-       DeletaTabelaSync('revisaomaquina');
-       jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
-       vJoGet := jSubObj.GetValue<TJSONArray>('TManutencao') as TJSONArray;
-       for i := 0 to vJoGet.Count-1 do
-       begin
-         vJoGetJ            := vJoGet.Items[i] as TJSONObject;
-         vId                := vJoGetJ.GetValue('id').value;
-         vidplanorevisao    := vJoGetJ.GetValue('idplanorevisao').value;
-         vidmaquina         := vJoGetJ.GetValue('idmaquina').value;
-         vdatainicio        := vJoGetJ.GetValue('datainicio').value;
-         vdatafim           := vJoGetJ.GetValue('datafim').value;
-         vhorimetro         := vJoGetJ.GetValue('horimetro').value;
-         vhorimetroproxima  := vJoGetJ.GetValue('horimetroproxima').value;
-
-         if vhorimetroproxima.Length=0 then
-          vhorimetroproxima:='0';
-
-         if vdatafim.Length>0 then
-           vdatafim := FormatDateTime('yyyy-mm-dd',strToDate(vdatafim));
-         if vdatafim.Length>0 then
-           vdatainicio := FormatDateTime('yyyy-mm-dd',strToDate(vdatainicio));
-
-         with qryAuxSync,qryAuxSync.sql do
-         begin
-          Clear;
-          Add('insert into revisaomaquina(id,idplanorevisao,idmaquina,datainicio,datafim,horimetro,horimetroproxima)');
-          Add('values(');
-          Add(vid+',');
-          Add(vidplanorevisao+',');
-          Add(vidmaquina+',');
-          Add(vdatainicio.QuotedString+',');
-          Add(vdatafim.QuotedString+',');
-          Add(StringReplace(vhorimetro,',','.',[rfReplaceAll])+',');
-          Add(StringReplace(vhorimetroproxima,',','.',[rfReplaceAll])+')');
-          try
-            qryAuxSync.ExecSQL;
-          except
-          on E: Exception do
-           begin
-             result:='Erro ao Inserir Revisao:'+E.Message;
-           end;
-         end;
-         end;
-       end;
-       result:='Revisao Baixados com Sucesso!'
-    end
-    else
-     Result :='Revisao Baixados com Sucesso!'
-   except
-   on E: Exception do
+ DeletaTabelaSync('revisaomaquinahist');
+ Url :='http://'+Host+':'+Porta+'/GetRevisao';
+ IdHTTP1.Request.CustomHeaders.Clear;
+ try
+  vJsonString        := IdHTTP1.Get(URL);
+  if(vJsonString<>'{"Mensagem":"Nenhum Revisao Historico encontrado!"}') then
+  begin
+    jSubObj  := TJSONObject.ParseJSONValue(vJsonString) as TJSONObject;
+     vJoGet := jSubObj.GetValue<TJSONArray>('TAuxRevisaoHist') as TJSONArray;
+     for i := 0 to vJoGet.Count-1 do
      begin
-       result:='Erro ao comunicar com Servidor:'+E.Message;
+        vJoGetJ         := vJoGet.Items[i] as TJSONObject;
+        vID             := vJoGetJ.GetValue('INSERT').value;
+        if vID.Length>0 then
+        begin
+          with qryAux,qryAux.SQL do
+          begin
+            Clear;
+            Add(vID);
+            try
+                ExecSQL;
+            except
+              on E: Exception do
+               result:=('Erro: ' + E.Message );
+            end;
+          end;
+        end;
      end;
+     result:='Revisao Historico Baixado com Sucesso!'
+  end
+  else
+   Result :=dmDB.LimpaResut(vJsonString);
+ except
+ on E: Exception do
+   begin
+     result:='Erro ao comunicar com Servidor:'+E.Message;
    end;
+ end;
 end;
 
 function TdmSync.GetMaquinas: string;
@@ -3627,8 +3888,6 @@ begin
        vJoGet := jSubObj.GetValue<TJSONArray>('Maquinas') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
-          if i=229 then
-            vID:='';
           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
           vID             := vJoGetJ.GetValue('Id').value;
           try
@@ -3672,7 +3931,16 @@ function TdmSync.GetUsuarios: string;
 var
  Url,vJsonString,vIsert,
  vID,vNOME,vLOGIN,vDT_REGISTER,vPASSWORD,vTIPO,vID_SEGMENTO,vSTATUS,
- vIdSupervisor,abastecimento,agronomo,SUPERVISOR:string;
+ vIdSupervisor,abastecimento,agronomo,SUPERVISOR,
+ armazem,
+ aplicacaosolido,
+ pulverizacao,
+ plantio,
+ colheita,
+ monitoramentopragas,
+ pluviometria,
+ manutencaomaquinas,
+ abastecimentoexterno:string;
  vJoInsert,vJoItemO,vJoItemO1,jSubObj,vJoGetJ : TJSONObject;
  vJoItem,vJoItem1,vJoGet  : TJSONArray;
  JsonValue,JsonId:TJSONValue;
@@ -3681,6 +3949,7 @@ var
  joItems: TJSONArray;
  ArrayPed, ArrayItem: TJSONArray;
 begin
+   DeletaTabelaSync('usuario');
    Url :='http://'+Host+':'+Porta+'/GetUsuariosAGRI';
    IdHTTP1.Request.CustomHeaders.Clear;
    try
@@ -3691,40 +3960,48 @@ begin
        vJoGet := jSubObj.GetValue<TJSONArray>('Usuarios') as TJSONArray;
        for i := 0 to vJoGet.Count-1 do
        begin
-           vJoGetJ         := vJoGet.Items[i] as TJSONObject;
-           vID             := vJoGetJ.GetValue('ID').value;
-           vSTATUS         := vJoGetJ.GetValue('Status').value;
-           vNOME           := vJoGetJ.GetValue('nome').value;
-           vLOGIN          := vJoGetJ.GetValue('usuario').value;
-           vPASSWORD       := vJoGetJ.GetValue('senha').value;
-           SUPERVISOR      := vJoGetJ.GetValue('supervisor').value;
-           vTIPO           := vJoGetJ.GetValue('tipo').value;
-           agronomo        := vJoGetJ.GetValue('agronomo').value;
-           abastecimento   := vJoGetJ.GetValue('abastecimento').value;
+          vJoGetJ              := vJoGet.Items[i] as TJSONObject;
+          vID                  := vJoGetJ.GetValue('ID').value;
+          vSTATUS              := vJoGetJ.GetValue('Status').value;
+          vNOME                := vJoGetJ.GetValue('nome').value;
+          vLOGIN               := vJoGetJ.GetValue('usuario').value;
+          vPASSWORD            := vJoGetJ.GetValue('senha').value;
+          SUPERVISOR           := vJoGetJ.GetValue('supervisor').value;
+          vTIPO                := vJoGetJ.GetValue('tipo').value;
+          agronomo             := vJoGetJ.GetValue('agronomo').value;
+          abastecimento        := vJoGetJ.GetValue('abastecimento').value;
+          armazem              := vJoGetJ.GetValue('armazem').value;
+          aplicacaosolido      := vJoGetJ.GetValue('aplicacaosolido').value;
+          pulverizacao         := vJoGetJ.GetValue('pulverizacao').value;
+          plantio              := vJoGetJ.GetValue('plantio').value;
+          colheita             := vJoGetJ.GetValue('colheita').value;
+          monitoramentopragas  := vJoGetJ.GetValue('monitoramentopragas').value;
+          pluviometria         := vJoGetJ.GetValue('pluviometria').value;
+          manutencaomaquinas   := vJoGetJ.GetValue('manutencaomaquinas').value;
+          abastecimentoexterno := vJoGetJ.GetValue('abastecimentoexterno').value;
 
           dmDB.TUsuario.Close;
           dmDB.TUsuario.Open;
-          dmDB.TUsuario.Filtered := false;
-          dmDB.TUsuario.Filter   := 'ID='+vId.QuotedString;
-          dmDB.TUsuario.Filtered := true;
-          if dmDB.TUsuario.RecordCount>0 then
-            dmDB.TUsuario.Edit
-          else
-          begin
-            dmDB.TUsuario.Close;
-            dmDB.TUsuario.Open;
-            dmDB.TUsuario.Insert;
-          end;
-          dmDB.TUsuarioId.AsString              := vId;
-          dmDB.TUsuarionome.AsString            := vNome;
-          dmDB.TUsuariousuario.AsString         := vLOGIN;
-          dmDB.TUsuariosenha.AsString           := vPASSWORD;
-          dmDB.TUsuariotipo.AsString            := vTIPO;
-          dmDB.TUsuariostatus.AsString          := vSTATUS;
-          dmDB.TUsuariosupervisor.AsString      := SUPERVISOR;
-          dmDB.TUsuarioagronomo.AsString        := agronomo;
-          dmDB.TUsuarioabastecimento.AsString   := abastecimento;
-          dmDB.TUsuariosupervisor.AsString      := SUPERVISOR;
+          dmDB.TUsuario.Insert;
+          dmDB.TUsuarioId.AsString                   := vId;
+          dmDB.TUsuarionome.AsString                 := vNome;
+          dmDB.TUsuariousuario.AsString              := vLOGIN;
+          dmDB.TUsuariosenha.AsString                := vPASSWORD;
+          dmDB.TUsuariotipo.AsString                 := vTIPO;
+          dmDB.TUsuariostatus.AsString               := vSTATUS;
+          dmDB.TUsuariosupervisor.AsString           := SUPERVISOR;
+          dmDB.TUsuarioagronomo.AsString             := agronomo;
+          dmDB.TUsuarioabastecimento.AsString        := abastecimento;
+          dmDB.TUsuariosupervisor.AsString           := SUPERVISOR;
+          dmDB.TUsuarioarmazem.AsString              := armazem;
+          dmDB.TUsuarioaplicacaosolido.AsString      := aplicacaosolido;
+          dmDB.TUsuariopulverizacao.AsString         := pulverizacao;
+          dmDB.TUsuarioplantio.AsString              := plantio;
+          dmDB.TUsuariocolheita.AsString             := colheita;
+          dmDB.TUsuariomonitoramentopragas.AsString  := monitoramentopragas;
+          dmDB.TUsuariopluviometria.AsString         := pluviometria;
+          dmDB.TUsuariomanutencaomaquinas.AsString   := manutencaomaquinas;
+          dmDB.TUsuarioabastecimentoexterno.AsString := abastecimentoexterno;
           try
            dmDB.TUsuario.ApplyUpdates(-1);
           except

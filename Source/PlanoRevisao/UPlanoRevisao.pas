@@ -83,7 +83,7 @@ end;
 
 procedure TfrmPlanoRevisao.Filtro;
 begin
- DMRevisao.TRevisao.Filtered := false;
+ DMRevisao.TPlanorevisao.Filtered := false;
  vFiltro :='';
  if edtNomeFiltro.Text.Length>0 then
  begin
@@ -92,17 +92,17 @@ begin
  begin
    if vFiltro.Length>0 then
    begin
-    DMRevisao.TRevisao.Filtered := false;
-    DMRevisao.TRevisao.Close;
-    DMRevisao.TRevisao.Open;
-    DMRevisao.TRevisao.Filter   := vFiltro;
-    DMRevisao.TRevisao.Filtered := true;
+    DMRevisao.TPlanorevisao.Filtered := false;
+    DMRevisao.TPlanorevisao.Close;
+    DMRevisao.TPlanorevisao.Open;
+    DMRevisao.TPlanorevisao.Filter   := vFiltro;
+    DMRevisao.TPlanorevisao.Filtered := true;
    end
    else
    begin
-    DMRevisao.TRevisao.Filtered := false;
-    DMRevisao.TRevisao.Close;
-    DMRevisao.TRevisao.Open;
+    DMRevisao.TPlanorevisao.Filtered := false;
+    DMRevisao.TPlanorevisao.Close;
+    DMRevisao.TPlanorevisao.Open;
    end;
  end;
  GeraListaPlanoRevi;
@@ -117,8 +117,8 @@ begin
  end
  else
  begin
-  DMRevisao.TRevisao.Close;
-  DMRevisao.TRevisao.Open();
+  DMRevisao.TPlanorevisao.Close;
+  DMRevisao.TPlanorevisao.Open();
  end;
  GeraListaPlanoRevi;
 end;
@@ -135,9 +135,9 @@ begin
  begin
   TThread.Synchronize(nil, procedure
   begin
-    DMRevisao.TRevisao.First;
+    DMRevisao.TPlanorevisao.First;
     ListaMaquinas.Items.Clear;
-    while not DMRevisao.TRevisao.eof do
+    while not DMRevisao.TPlanorevisao.eof do
      begin
        item := ListaMaquinas.Items.Add;
          with frmPlanoRevisao do
@@ -145,19 +145,19 @@ begin
            with item  do
            begin
              txt           := TListItemText(Objects.FindDrawable('Text3'));
-             txt.Text      := DMRevisao.TRevisaonome.AsString;
-             txt.TagString := DMRevisao.TRevisaoid.AsString;
+             txt.Text      := DMRevisao.TPlanorevisaonome.AsString;
+             txt.TagString := DMRevisao.TPlanorevisaoid.AsString;
 
              txt      := TListItemText(Objects.FindDrawable('Text10'));
              txt.Text := 'Intervalo Horas:';
 
              txt      := TListItemText(Objects.FindDrawable('Text6'));
-             txt.Text := DMRevisao.TRevisaointervalohoras.AsString;
+             txt.Text := DMRevisao.TPlanorevisaointervalohoras.AsString;
 
              img := TListItemImage(Objects.FindDrawable('Image14'));
              img.Bitmap     := frmPrincipal.imgMecanico.Bitmap;
            end;
-           DMRevisao.TRevisao.Next;
+           DMRevisao.TPlanorevisao.Next;
          end;
      end;
   end);

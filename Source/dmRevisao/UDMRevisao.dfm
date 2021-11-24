@@ -7,7 +7,7 @@ object dmRevisao: TdmRevisao
     OnReconcileError = TAuxRevisaoItemReconcileError
     Connection = dmDB.FDConn
     SQL.Strings = (
-      'select a.*,false as check  from AuxRevisaoItens a'
+      'select a.* from AuxRevisaoItens a'
       'where status>-1')
     Left = 32
     Top = 24
@@ -15,214 +15,92 @@ object dmRevisao: TdmRevisao
       FieldName = 'id'
       Origin = 'id'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
     end
-    object TAuxRevisaoItemstatus: TIntegerField
+    object TAuxRevisaoItemstatus: TWideStringField
       FieldName = 'status'
       Origin = 'status'
+      Required = True
+      Size = 32767
     end
-    object TAuxRevisaoItemdatareg: TSQLTimeStampField
+    object TAuxRevisaoItemdatareg: TWideStringField
       FieldName = 'datareg'
       Origin = 'datareg'
+      Required = True
+      Size = 32767
     end
-    object TAuxRevisaoItemidusuario: TIntegerField
+    object TAuxRevisaoItemidusuario: TWideStringField
       FieldName = 'idusuario'
       Origin = 'idusuario'
+      Required = True
+      Size = 32767
     end
-    object TAuxRevisaoItemdataalteracao: TSQLTimeStampField
+    object TAuxRevisaoItemdataalteracao: TWideStringField
       FieldName = 'dataalteracao'
       Origin = 'dataalteracao'
+      Size = 32767
     end
-    object TAuxRevisaoItemidusuarioalteracao: TIntegerField
+    object TAuxRevisaoItemidusuarioalteracao: TWideStringField
       FieldName = 'idusuarioalteracao'
       Origin = 'idusuarioalteracao'
+      Size = 32767
     end
-    object TAuxRevisaoItemnome: TWideStringField
+    object TAuxRevisaoItemnome: TStringField
       FieldName = 'nome'
       Origin = 'nome'
       Size = 100
     end
-    object TAuxRevisaoItemsyncaws: TIntegerField
-      FieldName = 'syncaws'
-      Origin = 'syncaws'
-    end
-    object TAuxRevisaoItemsyncfaz: TIntegerField
-      FieldName = 'syncfaz'
-      Origin = 'syncfaz'
-    end
-    object TAuxRevisaoItemgrupo: TWideStringField
+    object TAuxRevisaoItemgrupo: TStringField
       FieldName = 'grupo'
       Origin = 'grupo'
       Size = 100
     end
-    object TAuxRevisaoItemcheck: TBooleanField
-      AutoGenerateValue = arDefault
-      FieldName = 'check'
-      Origin = '"check"'
+    object TAuxRevisaoItemsyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Origin = 'syncaws'
+      Required = True
+      Size = 32767
+    end
+    object TAuxRevisaoItemsyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Origin = 'syncfaz'
+      Required = True
+      Size = 32767
     end
   end
-  object TRevisao: TFDQuery
+  object TPlanorevisao: TFDQuery
     CachedUpdates = True
-    OnReconcileError = TRevisaoReconcileError
+    OnReconcileError = TPlanorevisaoReconcileError
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select * from planorevisao')
     Left = 32
     Top = 72
-    object TRevisaoid: TIntegerField
+    object TPlanorevisaoid: TIntegerField
       FieldName = 'id'
       Origin = 'id'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object TRevisaonome: TStringField
+    object TPlanorevisaonome: TStringField
       FieldName = 'nome'
       Origin = 'nome'
       Size = 100
     end
-    object TRevisaointervalohoras: TBCDField
+    object TPlanorevisaointervalohoras: TBCDField
       FieldName = 'intervalohoras'
       Origin = 'intervalohoras'
       Precision = 15
       Size = 3
     end
   end
-  object TRevisaoItens: TFDQuery
+  object TPlanoRevisaoMaquinas: TFDQuery
     CachedUpdates = True
     IndexFieldNames = 'idrevisao'
     MasterSource = dsRevisao
     MasterFields = 'id'
     DetailFields = 'idrevisao'
-    OnReconcileError = TRevisaoItensReconcileError
-    Connection = dmDB.FDConn
-    SQL.Strings = (
-      
-        'select a.*,b.nome ItemNome,p.codigofabricante,p.nome produto  fr' +
-        'om planorevisaoitens a '
-      'join auxrevisaoitens b on a.idItem=b.id'
-      'join produtos p on p.id=a.idproduto'
-      'where a.status>-1 and a.idrevisao=:id')
-    Left = 32
-    Top = 128
-    ParamData = <
-      item
-        Name = 'ID'
-        ParamType = ptInput
-      end>
-    object TRevisaoItensid: TIntegerField
-      FieldName = 'id'
-      Origin = 'id'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-    end
-    object TRevisaoItensstatus: TWideStringField
-      FieldName = 'status'
-      Origin = 'status'
-      Required = True
-      Size = 32767
-    end
-    object TRevisaoItensdatareg: TWideStringField
-      FieldName = 'datareg'
-      Origin = 'datareg'
-      Required = True
-      Size = 32767
-    end
-    object TRevisaoItensidusuario: TWideStringField
-      FieldName = 'idusuario'
-      Origin = 'idusuario'
-      Required = True
-      Size = 32767
-    end
-    object TRevisaoItensdataalteracao: TWideStringField
-      FieldName = 'dataalteracao'
-      Origin = 'dataalteracao'
-      Size = 32767
-    end
-    object TRevisaoItensidusuarioalteracao: TWideStringField
-      FieldName = 'idusuarioalteracao'
-      Origin = 'idusuarioalteracao'
-      Size = 32767
-    end
-    object TRevisaoItensidrevisao: TWideStringField
-      FieldName = 'idrevisao'
-      Origin = 'idrevisao'
-      Size = 32767
-    end
-    object TRevisaoItenssyncaws: TWideStringField
-      FieldName = 'syncaws'
-      Origin = 'syncaws'
-      Required = True
-      Size = 32767
-    end
-    object TRevisaoItenssyncfaz: TWideStringField
-      FieldName = 'syncfaz'
-      Origin = 'syncfaz'
-      Required = True
-      Size = 32767
-    end
-    object TRevisaoItensidproduto: TWideStringField
-      FieldName = 'idproduto'
-      Origin = 'idproduto'
-      Size = 32767
-    end
-    object TRevisaoItensqtde: TBCDField
-      FieldName = 'qtde'
-      Origin = 'qtde'
-      Precision = 10
-      Size = 3
-    end
-    object TRevisaoItenstipo: TWideStringField
-      FieldName = 'tipo'
-      Origin = 'tipo'
-      Required = True
-      Size = 32767
-    end
-    object TRevisaoItensobservacao: TStringField
-      FieldName = 'observacao'
-      Origin = 'observacao'
-      Size = 100
-    end
-    object TRevisaoItensitem: TStringField
-      FieldName = 'item'
-      Origin = 'item'
-      Size = 100
-    end
-    object TRevisaoItensiditem: TWideStringField
-      FieldName = 'iditem'
-      Origin = 'iditem'
-      Size = 32767
-    end
-    object TRevisaoItensItemNome: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'ItemNome'
-      Origin = 'nome'
-      ProviderFlags = []
-      ReadOnly = True
-      Size = 100
-    end
-    object TRevisaoItenscodigofabricante: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'codigofabricante'
-      Origin = 'codigofabricante'
-      ProviderFlags = []
-      ReadOnly = True
-      Size = 50
-    end
-    object TRevisaoItensproduto: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'produto'
-      Origin = 'nome'
-      ProviderFlags = []
-      ReadOnly = True
-      Size = 50
-    end
-  end
-  object TRevisaoMaquinas: TFDQuery
-    CachedUpdates = True
-    IndexFieldNames = 'idrevisao'
-    MasterSource = dsRevisao
-    MasterFields = 'id'
-    DetailFields = 'idrevisao'
-    OnReconcileError = TRevisaoMaquinasReconcileError
+    OnReconcileError = TPlanoRevisaoMaquinasReconcileError
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select '
@@ -237,81 +115,81 @@ object dmRevisao: TdmRevisao
       'join maquinaveiculo b on a.idmaquina=b.id'
       'where a.status=1'
       'and a.idRevisao=:id')
-    Left = 120
-    Top = 128
+    Left = 32
+    Top = 184
     ParamData = <
       item
         Name = 'ID'
         ParamType = ptInput
       end>
-    object TRevisaoMaquinasid: TIntegerField
+    object TPlanoRevisaoMaquinasid: TIntegerField
       FieldName = 'id'
       Origin = 'id'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
     end
-    object TRevisaoMaquinasstatus: TIntegerField
+    object TPlanoRevisaoMaquinasstatus: TIntegerField
       FieldName = 'status'
       Origin = 'status'
     end
-    object TRevisaoMaquinasdatareg: TSQLTimeStampField
+    object TPlanoRevisaoMaquinasdatareg: TSQLTimeStampField
       FieldName = 'datareg'
       Origin = 'datareg'
     end
-    object TRevisaoMaquinasidusuario: TIntegerField
+    object TPlanoRevisaoMaquinasidusuario: TIntegerField
       FieldName = 'idusuario'
       Origin = 'idusuario'
     end
-    object TRevisaoMaquinasdataalteracao: TSQLTimeStampField
+    object TPlanoRevisaoMaquinasdataalteracao: TSQLTimeStampField
       FieldName = 'dataalteracao'
       Origin = 'dataalteracao'
     end
-    object TRevisaoMaquinasidusuarioalteracao: TIntegerField
+    object TPlanoRevisaoMaquinasidusuarioalteracao: TIntegerField
       FieldName = 'idusuarioalteracao'
       Origin = 'idusuarioalteracao'
     end
-    object TRevisaoMaquinasidrevisao: TIntegerField
+    object TPlanoRevisaoMaquinasidrevisao: TIntegerField
       FieldName = 'idrevisao'
       Origin = 'idrevisao'
     end
-    object TRevisaoMaquinasidmaquina: TIntegerField
+    object TPlanoRevisaoMaquinasidmaquina: TIntegerField
       FieldName = 'idmaquina'
       Origin = 'idmaquina'
     end
-    object TRevisaoMaquinassyncaws: TIntegerField
+    object TPlanoRevisaoMaquinassyncaws: TIntegerField
       FieldName = 'syncaws'
       Origin = 'syncaws'
     end
-    object TRevisaoMaquinassyncfaz: TIntegerField
+    object TPlanoRevisaoMaquinassyncfaz: TIntegerField
       FieldName = 'syncfaz'
       Origin = 'syncfaz'
     end
-    object TRevisaoMaquinasmodelo: TWideStringField
+    object TPlanoRevisaoMaquinasmodelo: TWideStringField
       AutoGenerateValue = arDefault
       FieldName = 'modelo'
       Origin = 'modelo'
       Size = 50
     end
-    object TRevisaoMaquinasprefixo: TWideStringField
+    object TPlanoRevisaoMaquinasprefixo: TWideStringField
       AutoGenerateValue = arDefault
       FieldName = 'prefixo'
       Origin = 'prefixo'
     end
-    object TRevisaoMaquinasplaca: TWideStringField
+    object TPlanoRevisaoMaquinasplaca: TWideStringField
       AutoGenerateValue = arDefault
       FieldName = 'placa'
       Origin = 'placa'
     end
-    object TRevisaoMaquinascombustivel: TIntegerField
+    object TPlanoRevisaoMaquinascombustivel: TIntegerField
       AutoGenerateValue = arDefault
       FieldName = 'combustivel'
       Origin = 'combustivel'
     end
-    object TRevisaoMaquinasultimarevisao: TDateField
+    object TPlanoRevisaoMaquinasultimarevisao: TDateField
       AutoGenerateValue = arDefault
       FieldName = 'ultimarevisao'
       Origin = 'ultimarevisao'
     end
-    object TRevisaoMaquinashorimetroultimarev: TBCDField
+    object TPlanoRevisaoMaquinashorimetroultimarev: TBCDField
       AutoGenerateValue = arDefault
       FieldName = 'horimetroultimarev'
       Origin = 'horimetroultimarev'
@@ -320,9 +198,9 @@ object dmRevisao: TdmRevisao
     end
   end
   object dsRevisao: TDataSource
-    DataSet = TRevisao
+    DataSet = TPlanorevisao
     Left = 32
-    Top = 352
+    Top = 320
   end
   object TRevisaoMaquinaAplLista: TFDQuery
     CachedUpdates = True
@@ -489,12 +367,11 @@ object dmRevisao: TdmRevisao
       'where a.status>-1')
     Left = 384
     Top = 136
-    object TRevisaoMaquinaItensid: TWideStringField
+    object TRevisaoMaquinaItensid: TFDAutoIncField
       FieldName = 'id'
       Origin = 'id'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-      Size = 32767
+      ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object TRevisaoMaquinaItensstatus: TWideStringField
       FieldName = 'status'
@@ -611,7 +488,7 @@ object dmRevisao: TdmRevisao
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select * from revisaomaquina a '
-      'where a.status=-100')
+      'where a.status>-1')
     Left = 520
     Top = 176
     object TRevisaoMaquinaAplid: TIntegerField
@@ -712,6 +589,7 @@ object dmRevisao: TdmRevisao
     end
   end
   object TRevisaoServicos: TFDQuery
+    CachedUpdates = True
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select * from servicomanutencao s '
@@ -722,24 +600,20 @@ object dmRevisao: TdmRevisao
       FieldName = 'id'
       Origin = 'id'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
     end
     object TRevisaoServicosstatus: TWideStringField
       FieldName = 'status'
       Origin = 'status'
-      Required = True
       Size = 32767
     end
     object TRevisaoServicosdatareg: TWideStringField
       FieldName = 'datareg'
       Origin = 'datareg'
-      Required = True
       Size = 32767
     end
     object TRevisaoServicosidusuario: TWideStringField
       FieldName = 'idusuario'
       Origin = 'idusuario'
-      Required = True
       Size = 32767
     end
     object TRevisaoServicosdataalteracao: TWideStringField
@@ -760,7 +634,6 @@ object dmRevisao: TdmRevisao
     object TRevisaoServicosidrevisao: TWideStringField
       FieldName = 'idrevisao'
       Origin = 'idrevisao'
-      Required = True
       Size = 32767
     end
     object TRevisaoServicosdescricao: TStringField
@@ -782,13 +655,11 @@ object dmRevisao: TdmRevisao
     object TRevisaoServicossyncaws: TWideStringField
       FieldName = 'syncaws'
       Origin = 'syncaws'
-      Required = True
       Size = 32767
     end
     object TRevisaoServicossyncfaz: TWideStringField
       FieldName = 'syncfaz'
       Origin = 'syncfaz'
-      Required = True
       Size = 32767
     end
     object TRevisaoServicosdatarealizado: TDateField
@@ -797,6 +668,7 @@ object dmRevisao: TdmRevisao
     end
   end
   object TPlanoRevisaoItens: TFDQuery
+    CachedUpdates = True
     Connection = dmDB.FDConn
     SQL.Strings = (
       'select '
@@ -811,8 +683,8 @@ object dmRevisao: TdmRevisao
       'left join produtos p on p.id=a.idproduto'
       'where a.status>-1 and a.idrevisao=1'
       'order by a.tipo,a.item')
-    Left = 136
-    Top = 240
+    Left = 32
+    Top = 128
     object TPlanoRevisaoItenstipoStr: TWideStringField
       AutoGenerateValue = arDefault
       FieldName = 'tipoStr'

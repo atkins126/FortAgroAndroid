@@ -287,7 +287,9 @@ var
  vFiltro:string;
 begin
   if cbxStatusF.ItemIndex>-1 then
-   vFiltro := vFiltro+' AND STATUS='+intToStr(cbxStatusF.ItemIndex);
+  begin
+    vFiltro := vFiltro+' AND STATUS='+intToStr(cbxStatusF.ItemIndex);
+  end;
   if edtNumeroF.Text.Length>0 then
    vFiltro := vFiltro+' AND ID='+edtNumeroF.Text;
 

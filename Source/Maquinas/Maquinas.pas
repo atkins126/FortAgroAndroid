@@ -26,12 +26,8 @@ type
     layLista: TLayout;
     layFiltros: TLayout;
     RecGro: TRectangle;
-    Label1: TLabel;
-    edtNomeFiltro: TEdit;
-    edtPlacaF: TEdit;
     edtPrefixoF: TEdit;
     Label14: TLabel;
-    lblPf: TLabel;
     SpeedButton1: TSpeedButton;
     layImg: TLayout;
     Rectangle6: TRectangle;
@@ -49,8 +45,6 @@ type
     Image1: TImage;
     ListaMaquinas: TListView;
     ClearEditButton1: TClearEditButton;
-    ClearEditButton2: TClearEditButton;
-    ClearEditButton3: TClearEditButton;
     procedure btnFecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
@@ -73,7 +67,7 @@ type
     procedure myShowMenssagem(msg: string);
     procedure GeraListaMaquinas;
   public
-    vIdMaquinaSel,vMarcaModelo,vUltimoHorimetro:string;
+    vIdMaquinaSel,vMarcaModelo,vUltimoHorimetro,vFiltro:string;
   end;
 
 var
@@ -163,46 +157,13 @@ begin
 end;
 
 procedure TfrmMaquinas.Filtro;
-var
- vFiltrado:integer;
- vFiltro:string;
 begin
- vFiltrado :=0;
  dmdb.TUsuario.Filtered := false;
- if edtNomeFiltro.Text.Length>0 then
- begin
-   vFiltrado :=1;
-   vFiltro := 'MODELO LIKE '+QuotedStr('%'+edtNomeFiltro.Text+'%');
- end;
- if edtPlacaF.Text.Length>0 then
- begin
-  if vFiltrado=0 then
-   vFiltro := 'PLACA LIKE '+QuotedStr('%'+edtPlacaF.Text+'%')
-  else
-   vFiltro := vFiltro+' AND PLACA LIKE'+QuotedStr('%'+edtPlacaF.Text+'%');
-   vFiltrado :=1;
- end;
  if edtPrefixoF.Text.Length>0 then
- begin
-  if vFiltrado=0 then
-   vFiltro := 'PREFIXO LIKE'+QuotedStr('%'+edtPrefixoF.Text+'%')
-  else
-   vFiltro := vFiltro+' and PREFIXO LIKE'+QuotedStr('%'+edtPrefixoF.Text+'%');
-  vFiltrado :=1;
- end;
- if vFiltrado=1 then
- begin
-  dmdb.TMaquina.Filter   := vFiltro;
-  dmdb.TMaquina.Filtered := true;
- end
+  vFiltro := ' AND PREFIXO LIKE'+QuotedStr('%'+edtPrefixoF.Text+'%')
  else
- begin
-   dmdb.TMaquina.Filtered := false;
-   dmdb.TMaquina.Close;
-   dmdb.TMaquina.Open;
-   dmdb.TMaquina.Filter   := vFiltro;
-   dmdb.TMaquina.Filtered := true;
- end;
+  vFiltro := '';
+ dmDB.AbreMaquinas(vFiltro);
  GeraListaMaquinas;
  lblTotalRegistro.Text := intToStr(ListaMaquinas.Items.Count);
 end;
@@ -223,11 +184,16 @@ end;
 procedure TfrmMaquinas.FormShow(Sender: TObject);
 begin
  frmMaquinas.StyleBook := frmPrincipal.StyleBook1;
- BindSourceDB1.DataSet := nil;
- dmDB.TMaquina.Close;
- dmDB.TMaquina.Open();
- BindSourceDB1.DataSet  := dmDB.TMaquina;
- GeraListaMaquinas;
+ if dmDB.vPulverizacao=1 then
+ begin
+  edtPrefixoF.Enabled := false;
+  dmDB.AbreMaquinas(' AND PREFIXO LIKE '+QuotedStr('%'+'PV'+'%'));
+  GeraListaMaquinas;
+ end
+ else
+ begin
+  edtPrefixoF.Enabled := true;
+ end;
 end;
 
 procedure TfrmMaquinas.GeraListaMaquinas;

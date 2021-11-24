@@ -5,8 +5,8 @@ object dmDB: TdmDB
   object FDConn: TFDConnection
     Params.Strings = (
       
-        'Database=E:\Projetos2021\Fortaleza\FortAgroAndroid\db\AppFortAgr' +
-        '.db'
+        'Database=D:\Projetos2021\FortAgroMobile\FortAgroAndroid\db\Fort.' +
+        'db'
       'LockingMode=Normal'
       'DriverID=SQLite')
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -40,6 +40,11 @@ object dmDB: TdmDB
     object qryConfigSalvarLogin: TIntegerField
       FieldName = 'SalvarLogin'
       Origin = 'SalvarLogin'
+    end
+    object qryConfigTIPODB: TStringField
+      FieldName = 'TIPODB'
+      Origin = 'TIPODB'
+      Size = 11
     end
   end
   object TUsuario: TFDQuery
@@ -112,6 +117,58 @@ object dmDB: TdmDB
     object TUsuarioabastecimento: TIntegerField
       FieldName = 'abastecimento'
       Origin = 'abastecimento'
+    end
+    object TUsuariomanutencaomaquinas: TWideStringField
+      FieldName = 'manutencaomaquinas'
+      Origin = 'manutencaomaquinas'
+      Required = True
+      Size = 32767
+    end
+    object TUsuarioarmazem: TWideStringField
+      FieldName = 'armazem'
+      Origin = 'armazem'
+      Required = True
+      Size = 32767
+    end
+    object TUsuarioaplicacaosolido: TWideStringField
+      FieldName = 'aplicacaosolido'
+      Origin = 'aplicacaosolido'
+      Required = True
+      Size = 32767
+    end
+    object TUsuariopulverizacao: TWideStringField
+      FieldName = 'pulverizacao'
+      Origin = 'pulverizacao'
+      Required = True
+      Size = 32767
+    end
+    object TUsuarioplantio: TWideStringField
+      FieldName = 'plantio'
+      Origin = 'plantio'
+      Required = True
+      Size = 32767
+    end
+    object TUsuariocolheita: TWideStringField
+      FieldName = 'colheita'
+      Origin = 'colheita'
+      Required = True
+      Size = 32767
+    end
+    object TUsuariomonitoramentopragas: TWideStringField
+      FieldName = 'monitoramentopragas'
+      Origin = 'monitoramentopragas'
+      Required = True
+      Size = 32767
+    end
+    object TUsuariopluviometria: TWideStringField
+      FieldName = 'pluviometria'
+      Origin = 'pluviometria'
+      Required = True
+      Size = 32767
+    end
+    object TUsuarioabastecimentoexterno: TIntegerField
+      FieldName = 'abastecimentoexterno'
+      Origin = 'abastecimentoexterno'
     end
   end
   object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
@@ -302,9 +359,9 @@ object dmDB: TdmDB
       FieldName = 'codigofabricante'
       Size = 50
     end
-    object TProdutosdefensivo: TIntegerField
-      FieldName = 'defensivo'
-      Origin = 'defensivo'
+    object TProdutosdefencivo: TIntegerField
+      FieldName = 'defencivo'
+      Origin = 'defencivo'
     end
   end
   object TOperacoes: TFDQuery
@@ -1129,19 +1186,26 @@ object dmDB: TdmDB
       FieldName = 'id'
       Origin = 'id'
       ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = True
     end
     object TDetTalhoesPulidTalhao: TIntegerField
       FieldName = 'idTalhao'
       Origin = 'idTalhao'
+      Required = True
     end
     object TDetTalhoesPulidOperacao: TIntegerField
       FieldName = 'idOperacao'
       Origin = 'idOperacao'
+      Required = True
     end
     object TDetTalhoesPulAreaPrevista: TBCDField
       FieldName = 'AreaPrevista'
       Origin = 'AreaPrevista'
+      Precision = 15
+      Size = 2
+    end
+    object TDetTalhoesPulAreaRealizada: TBCDField
+      FieldName = 'AreaRealizada'
+      Origin = 'AreaRealizada'
       Precision = 15
       Size = 2
     end
@@ -1152,12 +1216,6 @@ object dmDB: TdmDB
       ProviderFlags = []
       ReadOnly = True
       Size = 50
-    end
-    object TDetTalhoesPulAreaRealizada: TBCDField
-      FieldName = 'AreaRealizada'
-      Origin = 'AreaRealizada'
-      Precision = 15
-      Size = 2
     end
   end
   object qryAux: TFDQuery
@@ -2781,6 +2839,36 @@ object dmDB: TdmDB
       Origin = 'obs'
       Size = 100
     end
+    object TAbastecimentoimg: TWideMemoField
+      FieldName = 'img'
+      Origin = 'img'
+      BlobType = ftWideMemo
+    end
+    object TAbastecimentoimg2: TWideMemoField
+      FieldName = 'img2'
+      Origin = 'img2'
+      BlobType = ftWideMemo
+    end
+    object TAbastecimentoimg3: TWideMemoField
+      FieldName = 'img3'
+      Origin = 'img3'
+      BlobType = ftWideMemo
+    end
+    object TAbastecimentoimg4: TWideMemoField
+      FieldName = 'img4'
+      Origin = 'img4'
+      BlobType = ftWideMemo
+    end
+    object TAbastecimentoimg5: TWideMemoField
+      FieldName = 'img5'
+      Origin = 'img5'
+      BlobType = ftWideMemo
+    end
+    object TAbastecimentoexterno: TWideStringField
+      FieldName = 'externo'
+      Origin = 'externo'
+      Size = 32767
+    end
   end
   object TAbastecimentoOutros: TFDQuery
     CachedUpdates = True
@@ -3930,57 +4018,321 @@ object dmDB: TdmDB
   object TListaRevisao: TFDQuery
     Connection = FDConn
     SQL.Strings = (
-      'select a.*,b.nome  from revisaomaquina a '
+      'select a.*,b.nome  from revisaomaquinahist a '
       'join planorevisao b on a.idplanorevisao=b.id'
       'where a.idmaquina=1')
-    Left = 424
-    Top = 32
+    Left = 440
+    Top = 40
     object TListaRevisaoid: TIntegerField
       FieldName = 'id'
-      Origin = 'id'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
-    end
-    object TListaRevisaoidplanorevisao: TWideStringField
-      FieldName = 'idplanorevisao'
-      Origin = 'idplanorevisao'
-      Required = True
-      Size = 32767
     end
     object TListaRevisaoidmaquina: TWideStringField
       FieldName = 'idmaquina'
-      Origin = 'idmaquina'
       Required = True
       Size = 32767
     end
+    object TListaRevisaoobservacao: TStringField
+      FieldName = 'observacao'
+      Size = 100
+    end
     object TListaRevisaodatainicio: TDateField
       FieldName = 'datainicio'
-      Origin = 'datainicio'
       Required = True
     end
     object TListaRevisaodatafim: TDateField
       FieldName = 'datafim'
-      Origin = 'datafim'
     end
     object TListaRevisaohorimetro: TBCDField
       FieldName = 'horimetro'
-      Origin = 'horimetro'
       Precision = 15
       Size = 2
     end
     object TListaRevisaohorimetroproxima: TBCDField
       FieldName = 'horimetroproxima'
-      Origin = 'horimetroproxima'
       Precision = 15
       Size = 3
     end
+    object TListaRevisaoidplanorevisao: TIntegerField
+      FieldName = 'idplanorevisao'
+    end
     object TListaRevisaonome: TStringField
-      AutoGenerateValue = arDefault
       FieldName = 'nome'
-      Origin = 'nome'
-      ProviderFlags = []
       ReadOnly = True
       Size = 100
+    end
+  end
+  object TOperacaoExtra: TFDQuery
+    Connection = FDConn
+    SQL.Strings = (
+      'select * from operacaosafratalhao')
+    Left = 320
+    Top = 24
+    object TOperacaoExtraid: TIntegerField
+      FieldName = 'id'
+      Origin = 'id'
+      Required = True
+    end
+    object TOperacaoExtrastatus: TWideStringField
+      FieldName = 'status'
+      Origin = 'status'
+      Required = True
+      Size = 32767
+    end
+    object TOperacaoExtradatareg: TWideStringField
+      FieldName = 'datareg'
+      Origin = 'datareg'
+      Required = True
+      Size = 32767
+    end
+    object TOperacaoExtraidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Origin = 'idusuario'
+      Required = True
+      Size = 32767
+    end
+    object TOperacaoExtradataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Origin = 'dataalteracao'
+      Size = 32767
+    end
+    object TOperacaoExtraidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Origin = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object TOperacaoExtraidsafra: TWideStringField
+      FieldName = 'idsafra'
+      Origin = 'idsafra'
+      Required = True
+      Size = 32767
+    end
+    object TOperacaoExtraidoperacao: TWideStringField
+      FieldName = 'idoperacao'
+      Origin = 'idoperacao'
+      Required = True
+      Size = 32767
+    end
+    object TOperacaoExtradatainicio: TDateField
+      FieldName = 'datainicio'
+      Origin = 'datainicio'
+    end
+    object TOperacaoExtradatafim: TDateField
+      FieldName = 'datafim'
+      Origin = 'datafim'
+    end
+    object TOperacaoExtraobservacao: TStringField
+      FieldName = 'observacao'
+      Origin = 'observacao'
+      Size = 100
+    end
+    object TOperacaoExtraidtalhao: TWideStringField
+      FieldName = 'idtalhao'
+      Origin = 'idtalhao'
+      Required = True
+      Size = 32767
+    end
+    object TOperacaoExtraidresponsavel: TWideStringField
+      FieldName = 'idresponsavel'
+      Origin = 'idresponsavel'
+      Size = 32767
+    end
+    object TOperacaoExtraareaprevista: TBCDField
+      FieldName = 'areaprevista'
+      Origin = 'areaprevista'
+      Precision = 15
+      Size = 2
+    end
+    object TOperacaoExtraarearealizada: TBCDField
+      FieldName = 'arearealizada'
+      Origin = 'arearealizada'
+      Precision = 15
+      Size = 2
+    end
+    object TOperacaoExtraFlagSync: TIntegerField
+      FieldName = 'FlagSync'
+      Origin = 'FlagSync'
+      Required = True
+    end
+    object TOperacaoExtradataSync: TDateTimeField
+      FieldName = 'dataSync'
+      Origin = 'dataSync'
+    end
+    object TOperacaoExtrafinalidade: TStringField
+      FieldName = 'finalidade'
+      Origin = 'finalidade'
+      Size = 30
+    end
+    object TOperacaoExtraidtipoaplicacaosolido: TStringField
+      FieldName = 'idtipoaplicacaosolido'
+      Origin = 'idtipoaplicacaosolido'
+      Size = 30
+    end
+    object TOperacaoExtraidcultura: TIntegerField
+      FieldName = 'idcultura'
+      Origin = 'idcultura'
+    end
+    object TOperacaoExtraidvariedade: TIntegerField
+      FieldName = 'idvariedade'
+      Origin = 'idvariedade'
+    end
+    object TOperacaoExtraidreceituario: TIntegerField
+      FieldName = 'idreceituario'
+      Origin = 'idreceituario'
+    end
+    object TOperacaoExtratipoterraaereo: TStringField
+      FieldName = 'tipoterraaereo'
+      Origin = 'tipoterraaereo'
+    end
+    object TOperacaoExtraidOpMaster: TIntegerField
+      FieldName = 'idOpMaster'
+      Origin = 'idOpMaster'
+    end
+    object TOperacaoExtraidcobertura: TIntegerField
+      FieldName = 'idcobertura'
+      Origin = 'idcobertura'
+    end
+    object TOperacaoExtraQualidadeCobertura: TStringField
+      FieldName = 'QualidadeCobertura'
+      Origin = 'QualidadeCobertura'
+    end
+  end
+  object QryFotos: TFDQuery
+    Connection = FDConn
+    SQL.Strings = (
+      'select * from abastecimento')
+    Left = 464
+    Top = 528
+    object QryFotosid: TIntegerField
+      FieldName = 'id'
+      Origin = 'id'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object QryFotosstatus: TWideStringField
+      FieldName = 'status'
+      Origin = 'status'
+      Required = True
+      Size = 32767
+    end
+    object QryFotosdatareg: TWideStringField
+      FieldName = 'datareg'
+      Origin = 'datareg'
+      Required = True
+      Size = 32767
+    end
+    object QryFotosidusuario: TWideStringField
+      FieldName = 'idusuario'
+      Origin = 'idusuario'
+      Required = True
+      Size = 32767
+    end
+    object QryFotosdataalteracao: TWideStringField
+      FieldName = 'dataalteracao'
+      Origin = 'dataalteracao'
+      Size = 32767
+    end
+    object QryFotosidusuarioalteracao: TWideStringField
+      FieldName = 'idusuarioalteracao'
+      Origin = 'idusuarioalteracao'
+      Size = 32767
+    end
+    object QryFotosidlocalestoque: TWideStringField
+      FieldName = 'idlocalestoque'
+      Origin = 'idlocalestoque'
+      Required = True
+      Size = 32767
+    end
+    object QryFotosidmaquina: TWideStringField
+      FieldName = 'idmaquina'
+      Origin = 'idmaquina'
+      Required = True
+      Size = 32767
+    end
+    object QryFotosidoperador: TWideStringField
+      FieldName = 'idoperador'
+      Origin = 'idoperador'
+      Required = True
+      Size = 32767
+    end
+    object QryFotosvolumelt: TBCDField
+      FieldName = 'volumelt'
+      Origin = 'volumelt'
+      Precision = 15
+      Size = 3
+    end
+    object QryFotoscombustivel: TIntegerField
+      FieldName = 'combustivel'
+      Origin = 'combustivel'
+      Required = True
+    end
+    object QryFotosdataabastecimento: TDateField
+      FieldName = 'dataabastecimento'
+      Origin = 'dataabastecimento'
+      Required = True
+    end
+    object QryFotoshora: TTimeField
+      FieldName = 'hora'
+      Origin = 'hora'
+      Required = True
+    end
+    object QryFotossyncaws: TWideStringField
+      FieldName = 'syncaws'
+      Origin = 'syncaws'
+      Required = True
+      Size = 32767
+    end
+    object QryFotossyncfaz: TWideStringField
+      FieldName = 'syncfaz'
+      Origin = 'syncfaz'
+      Required = True
+      Size = 32767
+    end
+    object QryFotoshorimetro: TBCDField
+      FieldName = 'horimetro'
+      Origin = 'horimetro'
+      Precision = 15
+      Size = 3
+    end
+    object QryFotosidatividade: TIntegerField
+      FieldName = 'idatividade'
+      Origin = 'idatividade'
+    end
+    object QryFotosobs: TStringField
+      FieldName = 'obs'
+      Origin = 'obs'
+      Size = 100
+    end
+    object QryFotosimg: TWideMemoField
+      FieldName = 'img'
+      Origin = 'img'
+      BlobType = ftWideMemo
+    end
+    object QryFotosimg2: TWideMemoField
+      FieldName = 'img2'
+      Origin = 'img2'
+      BlobType = ftWideMemo
+    end
+    object QryFotosimg3: TWideMemoField
+      FieldName = 'img3'
+      Origin = 'img3'
+      BlobType = ftWideMemo
+    end
+    object QryFotosimg4: TWideMemoField
+      FieldName = 'img4'
+      Origin = 'img4'
+      BlobType = ftWideMemo
+    end
+    object QryFotosimg5: TWideMemoField
+      FieldName = 'img5'
+      Origin = 'img5'
+      BlobType = ftWideMemo
+    end
+    object QryFotosexterno: TWideStringField
+      FieldName = 'externo'
+      Origin = 'externo'
+      Required = True
+      Size = 32767
     end
   end
 end
