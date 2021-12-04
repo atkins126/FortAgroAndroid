@@ -5,7 +5,7 @@
     </ProjectExtensions>
     <PropertyGroup>
         <DeviceId Condition="'$(Platform)'=='Android'">906b649b</DeviceId>
-        <DeviceId Condition="'$(Platform)'=='Android64'">906b649b</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='Android64'"/>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
         <DeployFile Include="Win32\Debug\FortMobile.exe" Condition="'$(Config)'=='Debug'">

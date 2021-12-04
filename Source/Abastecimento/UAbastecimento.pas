@@ -1229,6 +1229,7 @@ procedure TfrmAbastecimento.btnBuscarMaquinaClick(Sender: TObject);
 begin
   frmMaquinas := TfrmMaquinas.Create(Self);
   try
+    dmDB.vPulverizacao:=0;
     frmMaquinas.ShowModal(
     procedure(ModalResult: TModalResult)
     begin
